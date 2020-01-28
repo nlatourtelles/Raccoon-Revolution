@@ -21,6 +21,18 @@ GameEngine.prototype.init = function (ctx) {
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
     this.timer = new Timer();
+    this.startInput();
+    this.keyPress = new Array(8);
+
+    this.keyPress["up"] = false;
+    this.keyPress["down"] = false;
+    this.keyPress["left"] = false;
+    this.keyPress["right"] = false;
+    this.keyPress["shootUp"] = false;
+    this.keyPress["shootDown"] = false;
+    this.keyPress["shootLeft"] = false;
+    this.keyPress["shootRight"] = false;
+
     console.log('game initialized');
 }
 
@@ -31,6 +43,83 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.ctx.canvas);
     })();
+}
+
+GameEngine.prototype.startInput = function () {
+    console.log('Starting input');
+    var that = this;
+
+    this.ctx.canvas.addEventListener("keydown" , function(e) {
+        if(e.code === "KeyW") {
+            that.keyPress["up"] = true;
+            e.preventDefault();
+        }
+        if(e.code === "KeyS") {
+            that.keyPress["down"] = true;
+            e.preventDefault();
+        }
+        if(e.code === "KeyA") {
+            that.keyPress["left"] = true;
+            e.preventDefault();
+        }
+        if(e.code === "KeyD") {
+            that.keyPress["right"] = true;
+            e.preventDefault();
+        }
+        if(e.code == "ArrowUp") {
+            that.keyPress["shootUp"] = true;
+            e.preventDefault();
+        }
+        if(e.code === "ArrowDown") {
+            that.keyPress["shootDown"] = true;
+            e.preventDefault();
+        }
+        if(e.code === "ArrowLeft") {
+            that.keyPress["shootLeft"] = true;
+            e.preventDefault();
+        }
+        if(e.code === "ArrowRight") {
+            that.keyPress["shootRight"] = true;
+            e.preventDefault();
+        }
+    });
+
+    this.ctx.canvas.addEventListener("keyup" , function(e) {
+        if(e.code === "KeyW") {
+            that.keyPress["up"] = false;
+            e.preventDefault();
+        }
+        if(e.code === "KeyS") {
+            that.keyPress["down"] = false;
+            e.preventDefault();
+        }
+        if(e.code === "KeyA") {
+            that.keyPress["left"] = false;
+            e.preventDefault();
+        }
+        if(e.code === "KeyD") {
+            that.keyPress["right"] = false;
+            e.preventDefault();
+        }
+        if(e.code == "ArrowUp") {
+            that.keyPress["shootUp"] = false;
+            e.preventDefault();
+        }
+        if(e.code === "ArrowDown") {
+            that.keyPress["shootDown"] = false;
+            e.preventDefault();
+        }
+        if(e.code === "ArrowLeft") {
+            that.keyPress["shootLeft"] = false;
+            e.preventDefault();
+        }
+        if(e.code === "ArrowRight") {
+            that.keyPress["shootRight"] = false;
+            e.preventDefault();
+        }
+    });
+
+    console.log('Input started');
 }
 
 GameEngine.prototype.addEntity = function (entity) {
