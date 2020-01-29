@@ -206,36 +206,39 @@ function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight) {
     this.hp = 4;
     this.x = 50;
     this.y = 300;
+    this.direction = "up";
     
 }
 
 MeleeRobot.prototype.update = function() {
-    // targetX = this.game.player.x;
-    // targetY = this.game.player.y;
-    // this.x = ((targetX - this.x) * this.game.clockTick) + this.x;
-    // this.y = ((targetY - this.y) * this.game.clockTick) + this.y;
+
+    if(this.y < this.game.player.y) {
+        this.y += this.game.clockTick * this.speed;
+        this.direction = "down"
+    }
+    if(this.y > this.game.player.y) {
+        this.y -= this.game.clockTick * this.speed;
+        this.direction = "up";
+    }
     if(this.x < this.game.player.x) {
         this.x += this.game.clockTick * this.speed;
+        this.direction = "right";
     }
     if (this.x > this.game.player.x) {
         this.x -= this.game.clockTick * this.speed;
+        this.direction = "left";
     }
-    if(this.y < this.game.player.y) {
-        this.y += this.game.clockTick * this.speed;
-    }
-    if (this.y > this.game.player.y) {
-        this.y -= this.game.clockTick * this.speed;
-    }
+    console.log(this.x - this.game.player.x);
 
-    // if (this.x >=1241 &&  this.y < 650)  {
-    //     this.y += this.game.clockTick * this.speed;
-    // } else if (this.y >= 650 && this.x > 75 ) {
-    //     this.x -= this.game.clockTick * this.speed;
-    // } else if (this.x <=75 && this.y > 75) {
-    //     this.y -= this.game.clockTick * this.speed;
-    // } else if (this.y <= 75 && this.x <= 1241) {
-    //     this.x += this.game.clockTick * this.speed;
-    // }
+    xDiff = Math.abs(this.x - this.game.player.x);
+    if (xDiff < 2) {
+        if(this.y < this.game.player.y) {
+            this.direction = "down"
+        }
+        if(this.y > this.game.player.y) {
+            this.direction = "up";
+        }
+    }
 }
 
 MeleeRobot.prototype.draw = function() {
@@ -248,7 +251,15 @@ MeleeRobot.prototype.draw = function() {
     // } else if (this.y <= 75 && this.x <= 1241) {
     //     this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     // }
-    this.walkDown.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    if(this.direction === "up") {
+        this.walkUp.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if(this.direction === "down") {
+        this.walkDown.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if (this.direction === "left") {
+        this.walkLeft.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if (this.direction === "right") {
+        this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    }
 }
 
 function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight) {
