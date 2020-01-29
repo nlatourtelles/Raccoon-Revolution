@@ -139,7 +139,8 @@ Raccoon.prototype.update = function () {
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
             this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Up.png"), this.x+32, this.y, "up", .9));
-        }   
+        }  
+         
     }else if( this.game.keyPress["shootDown"]) {
         this.direction = "down";
         
@@ -147,6 +148,7 @@ Raccoon.prototype.update = function () {
             this.lastShot = currentTime;
             this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Down.png"), this.x + 32, this.y+64, "down", .9));
         } 
+
     } else if(this.game.keyPress["shootLeft"]) {
         this.direction = "left";
         
@@ -154,6 +156,7 @@ Raccoon.prototype.update = function () {
             this.lastShot = currentTime;
             this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Left.png"), this.x, this.y+35, "left", .9));
         } 
+
     }else if(this.game.keyPress["shootRight"]) {
         this.direction = "right";
         
@@ -161,6 +164,7 @@ Raccoon.prototype.update = function () {
             this.lastShot = currentTime;
             this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Right.png"), this.x+50, this.y+35, "right", .9));
         } 
+
     }
 }
 
@@ -191,6 +195,134 @@ Bullet.prototype.draw = function() {
     this.bullet.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
 }
 
+function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight) {
+    this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 2);
+    this.walkDown = new Animation(walkDown, 64, 64, 512, .15, 8, true, 2);
+    this.walkLeft = new Animation(walkLeft, 64, 64, 768, .15, 12, true, 2);
+    this.walkRight = new Animation(walkRight, 64, 64, 768, .15, 12, true, 2);
+    this.game = game;
+    this.ctx = game.ctx;
+    this.speed = 150;
+    this.hp = 4;
+    this.x = 50;
+    this.y = 300;
+    
+}
+
+MeleeRobot.prototype.update = function() {
+    if (this.x >=1241 &&  this.y < 650)  {
+        this.y += this.game.clockTick * this.speed;
+    } else if (this.y >= 650 && this.x > 75 ) {
+        this.x -= this.game.clockTick * this.speed;
+    } else if (this.x <=75 && this.y > 75) {
+        this.y -= this.game.clockTick * this.speed;
+    } else if (this.y <= 75 && this.x <= 1241) {
+        this.x += this.game.clockTick * this.speed;
+    }
+}
+
+MeleeRobot.prototype.draw = function() {
+    if (this.x >=1241 &&  this.y < 650)  {
+        this.walkDown.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if (this.y >= 650 && this.x > 75) {
+        this.walkLeft.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if (this.x <=75 && this.y >75) {
+        this.walkUp.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if (this.y <= 75 && this.x <= 1241) {
+        this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    }
+}
+
+function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight) {
+    this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 2);
+    this.walkDown = new Animation(walkDown, 64, 64, 512, .15, 8, true, 2);
+    this.walkLeft = new Animation(walkLeft, 64, 64, 768, .15, 12, true, 2);
+    this.walkRight = new Animation(walkRight, 64, 64, 768, .15, 12, true, 2);
+    this.game = game;
+    this.ctx = game.ctx;
+    this.speed = 150;
+    this.hp = 4;
+    this.x = 50;
+    this.y = 50;
+    this.lastShot = 0;
+}
+
+
+LaserRobot.prototype.update = function() {
+    currentTime = Date.now() / 1000;
+    if (this.x >=1241 &&  this.y < 650)  {
+        this.y += this.game.clockTick * this.speed;
+        if(currentTime - this.lastShot >=1) {
+            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Down.png"), this.x+50, this.y+35, "down", .9));
+            this.lastShot = currentTime;
+        }
+    } else if (this.y >= 650 && this.x > 75 ) {
+        this.x -= this.game.clockTick * this.speed;
+        if(currentTime - this.lastShot >=1) {
+            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Left.png"), this.x+50, this.y+35, "left", .9));
+            this.lastShot = currentTime;
+        }
+    } else if (this.x <=75 && this.y > 75) {
+        this.y -= this.game.clockTick * this.speed;
+        if(currentTime - this.lastShot >=1) {
+            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Up.png"), this.x+50, this.y+35, "up", .9));
+            this.lastShot = currentTime;
+        }
+    } else if (this.y <= 75 && this.x <= 1241) {
+        this.x += this.game.clockTick * this.speed;
+        if(currentTime - this.lastShot >=1) {
+            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Right.png"), this.x+50, this.y+35, "right", .9));
+            this.lastShot = currentTime;
+        }
+    }
+
+
+}
+
+LaserRobot.prototype.draw = function() {
+    if (this.x >=1241 &&  this.y < 650)  {
+        this.walkDown.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if (this.y >= 650 && this.x > 75) {
+        this.walkLeft.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if (this.x <=75 && this.y >75) {
+        this.walkUp.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if (this.y <= 75 && this.x <= 1241) {
+        this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    }
+}
+
+function GroundFire(game, fireSprite, xLoc, yLoc) {
+    this.fireAnimation = new Animation (fireSprite, 128, 128, 768, .15, 6, true, 1);
+    this.game = game;
+    this.ctx = game.ctx;
+    this.x = xLoc;
+    this.y = yLoc;
+}
+
+GroundFire.prototype.update = function() {
+
+}
+
+GroundFire.prototype.draw = function() {
+    this.fireAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+}
+
+function Rock(game, rockSprite, xLoc, yLoc) {
+    this.rockAnimation = new Animation(rockSprite, 64, 64, 64, 1, 1, true, 1);
+    this.game = game;
+    this.ctx = game.ctx;
+    this.x = xLoc;
+    this.y = yLoc;
+}
+
+Rock.prototype.update = function(){
+
+}
+
+Rock.prototype.draw = function() {
+    this.rockAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+}
+
 //Queue All downloads
 AM.queueDownload("./img/floor.png");
 AM.queueDownload("./img/RaccoonWalk_Up.png");
@@ -201,6 +333,16 @@ AM.queueDownload("./img/Bullet_Up.png");
 AM.queueDownload("./img/Bullet_Down.png");
 AM.queueDownload("./img/Bullet_Left.png");
 AM.queueDownload("./img/Bullet_Right.png");
+AM.queueDownload("./img/MeleeRobWalk_Up.png");
+AM.queueDownload("./img/MeleeRobWalk_Down.png");
+AM.queueDownload("./img/MeleeRobWalk_Left.png");
+AM.queueDownload("./img/MeleeRobWalk_Right.png");
+AM.queueDownload("./img/LaserRobWalk_Up.png");
+AM.queueDownload("./img/LaserRobWalk_Down.png");
+AM.queueDownload("./img/LaserRobWalk_Left.png");
+AM.queueDownload("./img/LaserRobWalk_Right.png");
+AM.queueDownload("./img/GroundFireSpritesheet.png");
+AM.queueDownload("./img/GreyRock.png");
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
@@ -210,9 +352,17 @@ AM.downloadAll(function () {
     gameEngine.init(ctx);
     gameEngine.start();
 
+    
     gameEngine.addEntity(new Background(gameEngine, AM.getAsset("./img/floor.png")));
+    gameEngine.addEntity(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
+    gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/GreyRock.png"), 500, 350));
     gameEngine.addEntity(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
+    gameEngine.addEntity(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png")));
+    gameEngine.addEntity(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png")));
 
+    
     console.log("All Done!");
 });
