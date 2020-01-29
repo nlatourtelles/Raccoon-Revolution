@@ -14,8 +14,13 @@ function GameEngine() {
     this.ctx = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
+    this.player = null;
 }
 
+GameEngine.prototype.setPlayer = function(player) {
+    this.player = player;
+    this.entities.push(player);
+}
 GameEngine.prototype.init = function (ctx) {
     this.ctx = ctx;
     this.surfaceWidth = this.ctx.canvas.width;
