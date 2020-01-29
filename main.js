@@ -202,7 +202,7 @@ function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight) {
     this.walkRight = new Animation(walkRight, 64, 64, 768, .15, 12, true, 2);
     this.game = game;
     this.ctx = game.ctx;
-    this.speed = 150;
+    this.speed = 100;
     this.hp = 4;
     this.x = 50;
     this.y = 300;
@@ -210,27 +210,45 @@ function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight) {
 }
 
 MeleeRobot.prototype.update = function() {
-    if (this.x >=1241 &&  this.y < 650)  {
-        this.y += this.game.clockTick * this.speed;
-    } else if (this.y >= 650 && this.x > 75 ) {
-        this.x -= this.game.clockTick * this.speed;
-    } else if (this.x <=75 && this.y > 75) {
-        this.y -= this.game.clockTick * this.speed;
-    } else if (this.y <= 75 && this.x <= 1241) {
+    // targetX = this.game.player.x;
+    // targetY = this.game.player.y;
+    // this.x = ((targetX - this.x) * this.game.clockTick) + this.x;
+    // this.y = ((targetY - this.y) * this.game.clockTick) + this.y;
+    if(this.x < this.game.player.x) {
         this.x += this.game.clockTick * this.speed;
     }
+    if (this.x > this.game.player.x) {
+        this.x -= this.game.clockTick * this.speed;
+    }
+    if(this.y < this.game.player.y) {
+        this.y += this.game.clockTick * this.speed;
+    }
+    if (this.y > this.game.player.y) {
+        this.y -= this.game.clockTick * this.speed;
+    }
+
+    // if (this.x >=1241 &&  this.y < 650)  {
+    //     this.y += this.game.clockTick * this.speed;
+    // } else if (this.y >= 650 && this.x > 75 ) {
+    //     this.x -= this.game.clockTick * this.speed;
+    // } else if (this.x <=75 && this.y > 75) {
+    //     this.y -= this.game.clockTick * this.speed;
+    // } else if (this.y <= 75 && this.x <= 1241) {
+    //     this.x += this.game.clockTick * this.speed;
+    // }
 }
 
 MeleeRobot.prototype.draw = function() {
-    if (this.x >=1241 &&  this.y < 650)  {
-        this.walkDown.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    } else if (this.y >= 650 && this.x > 75) {
-        this.walkLeft.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    } else if (this.x <=75 && this.y >75) {
-        this.walkUp.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    } else if (this.y <= 75 && this.x <= 1241) {
-        this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    }
+    // if (this.x >=1241 &&  this.y < 650)  {
+    //     this.walkDown.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    // } else if (this.y >= 650 && this.x > 75) {
+    //     this.walkLeft.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    // } else if (this.x <=75 && this.y >75) {
+    //     this.walkUp.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    // } else if (this.y <= 75 && this.x <= 1241) {
+    //     this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    // }
+    this.walkDown.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
 }
 
 function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight) {
@@ -356,7 +374,7 @@ AM.downloadAll(function () {
     gameEngine.addEntity(new Background(gameEngine, AM.getAsset("./img/floor.png")));
     gameEngine.addEntity(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
     gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/GreyRock.png"), 500, 350));
-    gameEngine.addEntity(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
+    gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
     gameEngine.addEntity(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png")));
