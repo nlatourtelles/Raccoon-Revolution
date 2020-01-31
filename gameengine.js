@@ -15,6 +15,9 @@ function GameEngine() {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.player = null;
+    this.clickedTest =null;
+    this.started = null;
+    this.score =0;
 }
 
 GameEngine.prototype.setPlayer = function(player) {
@@ -28,6 +31,11 @@ GameEngine.prototype.init = function (ctx) {
     this.timer = new Timer();
     this.startInput();
     this.keyPress = new Array(8);
+
+    this.clickedTest = true;
+    this.started = false;
+    this.ctx.font = "30px Comic Sans MS";
+    this.ctx.fillStyle = "green";
 
     this.keyPress["up"] = false;
     this.keyPress["down"] = false;
@@ -122,6 +130,12 @@ GameEngine.prototype.startInput = function () {
             that.keyPress["shootRight"] = false;
             e.preventDefault();
         }
+    });
+
+    this.ctx.canvas.addEventListener("click", function(){
+        that.clickedTest = false; 
+        that.started = true;  
+
     });
 
     console.log('Input started');
