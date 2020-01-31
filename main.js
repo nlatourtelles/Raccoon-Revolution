@@ -178,7 +178,7 @@ Raccoon.prototype.update = function () {
                 this.time = Date.now();
                 this.hp -= 1;
                 if(this.hp <= 0){
-                    this.game.started = false;
+                    // this.game.started = false;
                 }
                 this.invincible = true;
             }
@@ -274,15 +274,6 @@ MeleeRobot.prototype.update = function() {
 }
 
 MeleeRobot.prototype.draw = function() {
-    // if (this.x >=1241 &&  this.y < 650)  {
-    //     this.walkDown.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    // } else if (this.y >= 650 && this.x > 75) {
-    //     this.walkLeft.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    // } else if (this.x <=75 && this.y >75) {
-    //     this.walkUp.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    // } else if (this.y <= 75 && this.x <= 1241) {
-    //     this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    // }
     if(this.direction === "up") {
         this.walkUp.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     } else if(this.direction === "down") {
@@ -353,6 +344,51 @@ LaserRobot.prototype.draw = function() {
         this.walkUp.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     } else if (this.y <= 75 && this.x <= 1241) {
         this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    }
+}
+
+function Turret(game, lookUp, lookDown, lookLeft, lookRight, direction, xLoc, yLoc) {
+    this.upAnim = new Animation(lookUp, 64, 64, 128, .15, 2, true, 2);
+    this.downAnim = new Animation(lookDown, 64, 64, 192, .15, 3, true, 2);
+    this.leftAnim = new Animation(lookLeft, 64, 64, 192, .15, 3, true, 2);
+    this.rightAnim = new Animation(lookRight, 64, 64, 192, .15, 3, true, 2);
+    this.direction = direction;
+    this.x = xLoc;
+    this.y = yLoc;
+    this.game = game;
+    this.hp = 4;
+    this.lastShot = 0;
+    this.ctx = game.ctx;
+}
+
+Turret.prototype.update = function() {
+    if(this.game.started == false){
+        return;
+    }
+    currentTime = Date.now() / 1000;
+    if(currentTime - this.lastShot >=5) {
+        this.lastShot = currentTime;
+        if(this.direction === "up") {
+            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Up.png"), this.x+30, this.y, this.direction, .9));
+        } else if(this.direction === "down") {
+            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Down.png"), this.x+30, this.y, this.direction, .9));
+        } else if(this.direction === "left") {
+            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Left.png"), this.x+30, this.y, this.direction, .9));
+        } else if(this.direction === "right") {
+            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Right.png"), this.x+30, this.y, this.direction, .9));
+        }
+    }
+}
+
+Turret.prototype.draw = function() {
+    if(this.direction === "up") {
+        this.upAnim.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if(this.direction === "down") {
+        this.downAnim.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if(this.direction === "left") {
+        this.leftAnim.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if(this.direction === "right") {
+        this.rightAnim.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     }
 }
 
@@ -497,7 +533,12 @@ AM.queueDownload("./img/LaserRobWalk_Left.png");
 AM.queueDownload("./img/LaserRobWalk_Right.png");
 AM.queueDownload("./img/GroundFireSpritesheet.png");
 AM.queueDownload("./img/GreyRock.png");
+AM.queueDownload("./img/Rock_Two.png");
 AM.queueDownload("./img/trashcan.png");
+AM.queueDownload("./img/Turret_Up.png");
+AM.queueDownload("./img/Turret_Down.png");
+AM.queueDownload("./img/Turret_Left.png");
+AM.queueDownload("./img/Turret_Right.png");
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
@@ -511,14 +552,28 @@ AM.downloadAll(function () {
     gameEngine.addEntity(new Background(gameEngine, AM.getAsset("./img/floor.png")));
     gameEngine.addEntity(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
     gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/GreyRock.png"), 500, 350));
+    gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
+
     gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
+
     gameEngine.addEntity(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png")));
+
     gameEngine.addEntity(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
         AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png")));
     gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
 
+    gameEngine.addEntity(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+        AM.getAsset("./img/Turret_Right.png"), "up", 683, 600));
+    
+    gameEngine.addEntity(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+        AM.getAsset("./img/Turret_Right.png"), "down", 683, -30));
+    
+    gameEngine.addEntity(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+        AM.getAsset("./img/Turret_Right.png"), "left", 1200, 350));
+    gameEngine.addEntity(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+        AM.getAsset("./img/Turret_Right.png"), "right", 50, 350));
     gameEngine.addEntity(new startText(gameEngine));
     gameEngine.addEntity(new scoreText(gameEngine));
     console.log("All Done!");
