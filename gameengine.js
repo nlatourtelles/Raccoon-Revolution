@@ -158,10 +158,22 @@ GameEngine.prototype.draw = function () {
 GameEngine.prototype.update = function () {
     var entitiesCount = this.entities.length;
 
+
     for (var i = 0; i < entitiesCount; i++) {
         var entity = this.entities[i];
+        
 
-        entity.update();
+        if (!entity.removeFromWorld) {
+
+            //console.log("this nolonger exists");
+
+            entity.update();
+        }
+    }
+    for (var i = this.entities.length - 1; i >= 0; --i) {
+        if (this.entities[i].removeFromWorld) {
+            this.entities.splice(i, 1);
+        }
     }
 }
 

@@ -99,6 +99,14 @@ function Raccoon(game, walkUp, walkDown, walkLeft, walkRight) {
     this.lastShot = 0;
     this.invincible = false;
     this.invincibleTIme = 0;
+    this.hitBox = {x: this.x, y: this.y, width: 64, height: 64};
+    this.bulletUp = {sprite: "./img/Bullet_Up.png", direction: "up", scale: .9};
+    this.bulletDown = {sprite: "./img/Bullet_Down.png", direction: "down", scale: .9};
+    this.bulletRight = {sprite: "./img/Bullet_Right.png", direction: "right", scale: .9};
+    this.bulletLeft =  {sprite: "./img/Bullet_Left.png", direction: "left", scale: .9};
+    
+    this.frate = 1000;
+    this.health = 4;
 }
 
 Raccoon.prototype.draw = function () {
@@ -123,27 +131,32 @@ Raccoon.prototype.update = function () {
     if( this.game.keyPress["up"] ) {
         this.y -= this.game.clockTick * this.speed;
         this.direction = "up";
+        this.hitBox.y = this.y;
     }
     if( this.game.keyPress["down"]) {
         this.y += this.game.clockTick * this.speed;
         this.direction = "down";
+        this.hitBox.y = this.y;
     }
     if( this.game.keyPress["left"]) {
         this.x -= this.game.clockTick * this.speed;
         this.direction = "left";
+        this.hitBox.x = this.x;
     }
     if( this.game.keyPress["right"]) {
         this.x += this.game.clockTick * this.speed;
         this.direction = "right";
+        this.hitBox.x = this.x;
     }
 
-    currentTime = Date.now() / 1000;
+    currentTime = Date.now() / this.frate;
     if( this.game.keyPress["shootUp"]) {
         this.direction = "up";
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Up.png"), this.x+32, this.y, "up", .9));
+   
+            this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletUp.sprite), this.x+32, this.y, this.bulletUp.direction, this.bulletUp.scale));
         }  
          
     }else if( this.game.keyPress["shootDown"]) {
@@ -151,7 +164,7 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Down.png"), this.x + 32, this.y+64, "down", .9));
+            this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletDown.sprite), this.x + 32, this.y+64, this.bulletDown.direction, this.bulletDown.scale));
         } 
 
     } else if(this.game.keyPress["shootLeft"]) {
@@ -159,7 +172,7 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Left.png"), this.x, this.y+35, "left", .9));
+            this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletLeft.sprite), this.x, this.y+35, this.bulletLeft.direction, this.bulletLeft.scale));
         } 
 
     }else if(this.game.keyPress["shootRight"]) {
@@ -167,7 +180,7 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Right.png"), this.x+50, this.y+35, "right", .9));
+            this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletRight.sprite), this.x+50, this.y+35, this.bulletRight.direction, this.bulletRight.scale));
         } 
 
     }
@@ -445,8 +458,88 @@ Health.prototype.draw = function() {
             this.moreY +=60;
     }
 }
+//for stat based power ups
+function PowerUp(game, powerUpSprite , theX, theY, health, frate, move, scale) { 
+    this.x = theX;
+    this.y = theY;
+    this.game = game;
+    this.ctx = game.ctx;
+    this.PowerUpAnimation = new Animation(powerUpSprite, 64, 64, 64, 1, 1, true, 1);
+    this.hitBox = {x: theX, y: theY, width: 64, height: 64};
 
+    this.healthUpgrade = health;
+    this.frateUpgrade = frate;
+    this.speedUpgrade = move;
+    this.scaleUp = scale;
+  
+}
+PowerUp.prototype.update = function() {
+    //colision detection
+    if(this.hitBox.x < this.game.player.hitBox.x + this.game.player.hitBox.width &&
+        this.hitBox.x + this.hitBox.width > this.game.player.hitBox.x && 
+        this.hitBox.y < this.game.player.hitBox.y + this.game.player.hitBox.height &&
+        this.hitBox.height + this.hitBox.y > this.game.player.hitBox.y) {
 
+            this.game.player.health += this.healthUpgrade;
+            this.game.player.frate *= this.frateUpgrade;
+            this.game.player.speed += this.speedUpgrade;
+        
+            this.removeFromWorld = true;
+            console.log("HIT");
+        }
+}
+PowerUp.prototype.draw = function() {
+    //if(!this.removeFromWorld) {
+        this.PowerUpAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    //}
+}
+//for stat based power ups
+function Ammo(game, powerUpSprite , theX, theY, bUp, bDown, bLeft, bRight, bNW, bSW, bSE, bNE, scale, name) { 
+    this.x = theX;
+    this.y = theY;
+    this.game = game;
+    this.ctx = game.ctx;
+    this.PowerUpAnimation = new Animation(powerUpSprite, 64, 64, 64, 1, 1, true, 1);
+    this.hitBox = {x: theX, y: theY, width: 64, height: 64};
+    this.name = name;
+    this.BulletUp = bUp;
+    this.BulletDown = bDown;
+    this.BulletLeft = bLeft;
+    this.BulletRight = bRight;
+    this.bNW = bNW;
+    this.bSW = bSW;
+    this.bSE = bSE;
+    this.bNE = bNE;
+    this.scaleUp = scale;
+  
+}
+Ammo.prototype.update = function() {
+    //colision detection
+    if(this.hitBox.x < this.game.player.hitBox.x + this.game.player.hitBox.width &&
+        this.hitBox.x + this.hitBox.width > this.game.player.hitBox.x && 
+        this.hitBox.y < this.game.player.hitBox.y + this.game.player.hitBox.height &&
+        this.hitBox.height + this.hitBox.y > this.game.player.hitBox.y) {
+   
+    
+                this.game.player.bulletUp.sprite = this.BulletUp;
+                this.game.player.bulletDown.sprite = this.BulletDown;
+                this.game.player.bulletLeft.sprite = this.BulletLeft;
+                this.game.player.bulletRight.sprite = this.BulletRight;
+                console.log("AMMO WORK THIS WORKED");
+            
+            
+            this.removeFromWorld = true;
+       
+           
+           
+            console.log("HIT");
+        }
+}
+Ammo.prototype.draw = function() {
+   
+        this.PowerUpAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    
+}
 function startText(game) {
     this.game = game;
     this.ctx = game.ctx;
@@ -539,6 +632,7 @@ AM.queueDownload("./img/Turret_Up.png");
 AM.queueDownload("./img/Turret_Down.png");
 AM.queueDownload("./img/Turret_Left.png");
 AM.queueDownload("./img/Turret_Right.png");
+AM.queueDownload("./img/pebble.png");
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
@@ -547,13 +641,17 @@ AM.downloadAll(function () {
     var gameEngine = new GameEngine();
     gameEngine.init(ctx);
     gameEngine.start();
-
+    //AM.queueDownload("./img/Bullet_Up.png");
+    //    AM.queueDownload("./img/Bullet_Down.png");
+    //AM.queueDownload("./img/Bullet_Left.png");
+    //AM.queueDownload("./img/Bullet_Right.png");
     
     gameEngine.addEntity(new Background(gameEngine, AM.getAsset("./img/floor.png")));
     gameEngine.addEntity(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
     gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/GreyRock.png"), 500, 350));
     gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
-
+    
+    
     gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
 
@@ -574,6 +672,11 @@ AM.downloadAll(function () {
         AM.getAsset("./img/Turret_Right.png"), "left", 1200, 350));
     gameEngine.addEntity(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
         AM.getAsset("./img/Turret_Right.png"), "right", 50, 350));
+    gameEngine.addEntity(new PowerUp(gameEngine, AM.getAsset("./img/pebble.png"), 200, 200, 1,  1, 20, 1));
+                    //function PowerUp(game, powerUpSprite , theX, theY, health, frate, move, scale)
+    gameEngine.addEntity(new Ammo(gameEngine, AM.getAsset("./img/pebble.png"), 400, 400, "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", 
+    "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", 2, "test"));            
+    //function Ammo(game, powerUpSprite , theX, theY, bUp, bDown, bLeft, bRight, bNW, bSW, bSE, bNE, scale, name) { 
     gameEngine.addEntity(new startText(gameEngine));
     gameEngine.addEntity(new scoreText(gameEngine));
     console.log("All Done!");
