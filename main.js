@@ -13,24 +13,6 @@ function Animation(spriteSheet, frameWidth, frameHeight, sheetWidth, frameDurati
     this.scale = scale;
 }
 
-// Animation.prototype.drawFrame = function (tick, ctx, x, y) {
-//     this.elapsedTime += tick;
-//     if (this.isDone()) {
-//         if (this.loop) this.elapsedTime = 0;
-//     }
-//     var frame = this.currentFrame();
-//     var xindex = 0;
-//     var yindex = 0;
-//     xindex = frame % this.sheetWidth;
-//     yindex = Math.floor(frame / this.sheetWidth);
-
-//     ctx.drawImage(this.spriteSheet,
-//                  xindex * this.frameWidth, yindex * this.frameHeight,  // source from sheet
-//                  this.frameWidth, this.frameHeight,
-//                  x, y,
-//                  this.frameWidth * this.scale,
-//                  this.frameHeight * this.scale);
-// }
 
 Animation.prototype.drawFrame = function (tick, ctx, x, y) {
     this.elapsedTime += tick;
@@ -99,12 +81,12 @@ function Raccoon(game, walkUp, walkDown, walkLeft, walkRight) {
     this.lastShot = 0;
     this.invincible = false;
     this.invincibleTIme = 0;
-    this.hitBox = {x: this.x, y: this.y, width: 64, height: 64};
+    this.hitBox = {x: this.x+33, y: this.y+27, width: 64, height: 64};
     this.bulletUp = {sprite: "./img/Bullet_Up.png", direction: "up", scale: .9};
     this.bulletDown = {sprite: "./img/Bullet_Down.png", direction: "down", scale: .9};
     this.bulletRight = {sprite: "./img/Bullet_Right.png", direction: "right", scale: .9};
     this.bulletLeft =  {sprite: "./img/Bullet_Left.png", direction: "left", scale: .9};
-    
+    this.removeFromWorld = false;
     this.frate = 1000;
     this.health = 4;
 }
@@ -121,6 +103,12 @@ Raccoon.prototype.draw = function () {
         this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     }
 
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
+    // this.ctx.beginPath();
+    // this.ctx.arc(this.hitBox.x, this.hitBox.y, 40, 0, 1.5*Math.PI);
+    // this.ctx.stroke();
     // this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
 }
 
@@ -131,22 +119,22 @@ Raccoon.prototype.update = function () {
     if( this.game.keyPress["up"] ) {
         this.y -= this.game.clockTick * this.speed;
         this.direction = "up";
-        this.hitBox.y = this.y;
+        this.hitBox.y = this.y+33;
     }
     if( this.game.keyPress["down"]) {
         this.y += this.game.clockTick * this.speed;
         this.direction = "down";
-        this.hitBox.y = this.y;
+        this.hitBox.y = this.y+33;
     }
     if( this.game.keyPress["left"]) {
         this.x -= this.game.clockTick * this.speed;
         this.direction = "left";
-        this.hitBox.x = this.x;
+        this.hitBox.x = this.x+27;
     }
     if( this.game.keyPress["right"]) {
         this.x += this.game.clockTick * this.speed;
         this.direction = "right";
-        this.hitBox.x = this.x;
+        this.hitBox.x = this.x+27;
     }
 
     currentTime = Date.now() / this.frate;
@@ -156,7 +144,7 @@ Raccoon.prototype.update = function () {
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
    
-            this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletUp.sprite), this.x+32, this.y, this.bulletUp.direction, this.bulletUp.scale));
+            this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletUp.sprite), this.x+32, this.y, this.bulletUp.direction, this.bulletUp.scale));
         }  
          
     }else if( this.game.keyPress["shootDown"]) {
@@ -164,7 +152,7 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-            this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletDown.sprite), this.x + 32, this.y+64, this.bulletDown.direction, this.bulletDown.scale));
+            this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletDown.sprite), this.x + 32, this.y+64, this.bulletDown.direction, this.bulletDown.scale));
         } 
 
     } else if(this.game.keyPress["shootLeft"]) {
@@ -172,7 +160,7 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-            this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletLeft.sprite), this.x, this.y+35, this.bulletLeft.direction, this.bulletLeft.scale));
+            this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletLeft.sprite), this.x, this.y+35, this.bulletLeft.direction, this.bulletLeft.scale));
         } 
 
     }else if(this.game.keyPress["shootRight"]) {
@@ -180,25 +168,47 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-            this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletRight.sprite), this.x+50, this.y+35, this.bulletRight.direction, this.bulletRight.scale));
+            this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletRight.sprite), this.x+50, this.y+35, this.bulletRight.direction, this.bulletRight.scale));
         } 
 
     }
 
-    if(this.game.entities[4].x > this.x){
-        if(this.game.entities[4].x - this.x <50){
-            if(this.game.entities[4].y - this.y < 50 && this.invincible == false){
-                this.time = Date.now();
-                this.hp -= 1;
-                if(this.hp <= 0){
-                    // this.game.started = false;
-                }
-                this.invincible = true;
-            }
-        }
-    }
+    // if(this.game.entities[4].x > this.x){
+    //     if(this.game.entities[4].x - this.x <50){
+    //         if(this.game.entities[4].y - this.y < 50 && this.invincible == false){
+    //             this.time = Date.now();
+    //             this.hp -= 1;
+    //             if(this.hp <= 0){
+    //                 // this.game.started = false;
+    //             }
+    //             this.invincible = true;
+    //         }
+    //     }
+    // }
     if(Date.now() - this.time > 1000){
         this.invincible = false;
+    }
+
+    for( i = 0; i < this.game.enemyProjectiles.length; i++) {
+        proj = this.game.enemyProjectiles[i];
+        if(this.hitBox.x < this.game.enemyProjectiles[i].hitBox.x + this.game.enemyProjectiles[i].hitBox.width &&
+            this.hitBox.x + this.hitBox.width > this.game.enemyProjectiles[i].hitBox.x && 
+            this.hitBox.y < this.game.enemyProjectiles[i].y + this.game.enemyProjectiles[i].hitBox.height &&
+            this.hitBox.height + this.hitBox.y > this.game.enemyProjectiles[i].hitBox.y) {
+                console.log("Ive been hit!");
+                this.hp -= 1;
+                proj.removeFromWorld = true;
+            }
+    }
+
+    for( i = 0; i < this.game.enemies.length; i++) {
+        enemy = this.game.enemies[i];
+        if(this.hitBox.x < enemy.hitBox.x + enemy.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > enemy.hitBox.x && 
+            this.hitBox.y < enemy.y + enemy.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > enemy.hitBox.y) {
+                this.hp -= 1;
+        }
     }
 }
 
@@ -211,30 +221,52 @@ function Bullet(game, spriteSheet, x, y, direction, scale) {
     this.scale = scale;
     this.ctx = game.ctx;
     this.speed = 250;
+    this.removeFromWorld = false;
+    
+    if(direction === "up") {
+        this.hitBox = {x: this.x+13, y: this.y, width: 30, height: 40};
+    } else if(direction === "down") {
+        this.hitBox = {x: this.x+13, y: this.y+20, width: 30, height: 40};
+    } else if(direction === "left") {
+        this.hitBox = {x: this.x, y: this.y+13, width: 40, height: 30};
+    } else if(direction === "right") {
+        this.hitBox = {x: this.x+20, y: this.y+13, width: 40, height: 30};
+    }
+    
+
 }
 
 Bullet.prototype.update = function() {
     if(this.direction === "up") {
         this.y -= this.game.clockTick * this.speed;
+        this.hitBox.y = this.y;
     } else if( this.direction === "down") {
         this.y += this.game.clockTick * this.speed;
+        this.hitBox.y = this.y + 20;
     } else if( this.direction === "left") {
         this.x -= this.game.clockTick * this.speed;
+        this.hitBox.x = this.x;
     } else if( this.direction === "right") {
         this.x += this.game.clockTick * this.speed;
+        this.hitBox.x = this.x + 20;
     }
 
-    if(this.game.entities[4].x > this.x){
-        if(this.game.entities[4].x - this.x <25){
-            if(this.game.entities[4].y - this.y < 25){
-                this.game.score += 100;
-            }
-        }
-    }
+    // for( i = 0; i < this.game.enemies.length; i++) {
+    //     enemy = this.game.enemies[i];
+    //     if(this.hitBox.x < enemy.hitBox.x + enemy.hitBox.width &&
+    //         this.hitBox.x + this.hitBox.width > enemy.hitBox.x && 
+    //         this.hitBox.y < enemy.y + enemy.hitBox.height &&
+    //         this.hitBox.height + this.hitBox.y > enemy.hitBox.y) {
+    //             this.removeFromWorld = true;
+    //     }
+    // }
 }
 
 Bullet.prototype.draw = function() {
     this.bullet.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
 }
 
 function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight) {
@@ -248,7 +280,12 @@ function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight) {
     this.hp = 4;
     this.x = 50;
     this.y = 300;
-    this.direction = "up";
+    this.direction = "right";
+    this.removeFromWorld = false;
+    this.hitBox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
+    this.upDownHitbox = {x: this.x+33, y: this.y+18, width: 57, height: 97};
+    this.leftRightHitbox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
+
     
 }
 
@@ -273,10 +310,10 @@ MeleeRobot.prototype.update = function() {
         this.x -= this.game.clockTick * this.speed;
         this.direction = "left";
     }
-    console.log(this.x - this.game.player.x);
+    // console.log(this.x - this.game.player.x);
 
     xDiff = Math.abs(this.x - this.game.player.x);
-    if (xDiff < 2) {
+    if (xDiff < 10) {
         if(this.y < this.game.player.y) {
             this.direction = "down"
         }
@@ -284,6 +321,32 @@ MeleeRobot.prototype.update = function() {
             this.direction = "up";
         }
     }
+
+    if(this.direction === "up" || this.direction === "down") {
+        this.hitBox = this.upDownHitbox;
+        this.hitBox.x = this.x +33;
+        this.hitBox.y = this.y +18;
+    } else {
+        this.hitBox = this.leftRightHitbox;
+        this.hitBox.x = this.x+50;
+        this.hitBox.y = this.y+20;
+    }
+
+    for(i = 0; i < this.game.playerBullet.length; i++) {
+        bullet = this.game.playerBullet[i];
+        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+            this.hitBox.y < bullet.y + bullet.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+                bullet.removeFromWorld = true;
+                this.hp -= 1;
+        }
+    }
+
+    if(this.hp <= 0) {
+        this.removeFromWorld = true;
+    }
+
 }
 
 MeleeRobot.prototype.draw = function() {
@@ -296,9 +359,12 @@ MeleeRobot.prototype.draw = function() {
     } else if (this.direction === "right") {
         this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     }
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
 }
 
-function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight) {
+function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight, direction) {
 
     this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 2);
     this.walkDown = new Animation(walkDown, 64, 64, 512, .15, 8, true, 2);
@@ -311,6 +377,11 @@ function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight) {
     this.x = 500;
     this.y = 50;
     this.lastShot = 0;
+    this.direction = direction;
+    this.hitBox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
+    this.upDownHitbox = {x: this.x+33, y: this.y+18, width: 57, height: 97};
+    this.leftRightHitbox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
+    this.removeFromWorld = false;
 }
 
 
@@ -322,27 +393,43 @@ LaserRobot.prototype.update = function() {
     if (this.x >=1241 &&  this.y < 650)  {
         this.y += this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >=1) {
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Down.png"), this.x+50, this.y+35, "down", .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+50, this.y+35, "down", .9));
             this.lastShot = currentTime;
         }
     } else if (this.y >= 650 && this.x > 75 ) {
         this.x -= this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >=1) {
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Left.png"), this.x+50, this.y+35, "left", .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+50, this.y+35, "left", .9));
             this.lastShot = currentTime;
         }
     } else if (this.x <=75 && this.y > 75) {
         this.y -= this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >=1) {
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Up.png"), this.x+50, this.y+35, "up", .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+50, this.y+35, "up", .9));
             this.lastShot = currentTime;
         }
     } else if (this.y <= 75 && this.x <= 1241) {
         this.x += this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >=1) {
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Right.png"), this.x+50, this.y+35, "right", .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+50, this.y+35, "right", .9));
             this.lastShot = currentTime;
         }
+    }
+
+
+    for(i = 0; i < this.game.playerBullet.length; i++) {
+        bullet = this.game.playerBullet[i];
+        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+            this.hitBox.y < bullet.y + bullet.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+                bullet.removeFromWorld = true;
+                this.hp -= 1;
+        }
+    }
+
+    if(this.hp <= 0) {
+        this.removeFromWorld = true;
     }
 
 
@@ -358,6 +445,64 @@ LaserRobot.prototype.draw = function() {
     } else if (this.y <= 75 && this.x <= 1241) {
         this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     }
+
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
+}
+
+function Laser(game, spriteSheet, xLoc, yLoc, direction, scale) {
+    this.game = game;
+    this.ctx = game.ctx;
+    this.scale = scale;
+    this.laserAnim = new Animation(spriteSheet, 64, 64, 192, 1, 3, true, scale);
+    this.direction = direction;
+    this.x = xLoc;
+    this.y = yLoc;
+    this.speed = 250;
+    this.hitBox = {x: this.x, y: this.y, width: 40, height: 32};
+    this.removeFromWorld = false;
+
+    if(direction === "up") {
+        this.hitBox = {x: this.x+21, y: this.y, width: 15, height: 40};
+    } else if(direction === "down") {
+        this.hitBox = {x: this.x+21, y: this.y, width: 15, height: 40};
+    } else if(direction === "left") {
+        this.hitBox = {x: this.x, y: this.y+21, width: 40, height: 15};
+    } else if(direction === "right") {
+        this.hitBox = {x: this.x, y: this.y+21, width: 40, height: 15};
+    }
+}
+
+Laser.prototype.update = function(){
+    if(this.direction === "up") {
+        this.y -= this.game.clockTick * this.speed;
+        this.hitBox.y = this.y+9;
+    } else if( this.direction === "down") {
+        this.y += this.game.clockTick * this.speed;
+        this.hitBox.y = this.y+9;
+    } else if( this.direction === "left") {
+        this.x -= this.game.clockTick * this.speed;
+        this.hitBox.x = this.x+9;
+    } else if( this.direction === "right") {
+        this.x += this.game.clockTick * this.speed;
+        this.hitBox.x = this.x+9;
+    }
+
+    // player = this.game.player;
+    // if(this.hitBox.x < player.hitBox.x + player.hitBox.width &&
+    //     this.hitBox.x + this.hitBox.width > player.hitBox.x && 
+    //     this.hitBox.y < player.y + player.hitBox.height &&
+    //     this.hitBox.height + this.hitBox.y > player.hitBox.y) {
+    //         this.removeFromWorld = true;
+    // }
+}
+
+Laser.prototype.draw = function(){
+    this.laserAnim.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
 }
 
 function Turret(game, lookUp, lookDown, lookLeft, lookRight, direction, xLoc, yLoc) {
@@ -372,6 +517,15 @@ function Turret(game, lookUp, lookDown, lookLeft, lookRight, direction, xLoc, yL
     this.hp = 4;
     this.lastShot = 0;
     this.ctx = game.ctx;
+    this.removeFromWorld = false;
+    if(this.direction === "up" || this.direction === "down"){
+        this.hitBox = {x: this.x+40, y: this.y+27, width: 50, height: 97};
+    } else if(this.direction === "left") {
+        this.hitBox = {x: this.x+50, y: this.y+15, width: 50, height: 97};
+    } else {
+        this.hitBox = {x: this.x+25, y: this.y+15, width: 50, height: 97};
+    }
+    
 }
 
 Turret.prototype.update = function() {
@@ -382,14 +536,29 @@ Turret.prototype.update = function() {
     if(currentTime - this.lastShot >=5) {
         this.lastShot = currentTime;
         if(this.direction === "up") {
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Up.png"), this.x+30, this.y, this.direction, .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+30, this.y, this.direction, .9));
         } else if(this.direction === "down") {
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Down.png"), this.x+30, this.y, this.direction, .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+30, this.y, this.direction, .9));
         } else if(this.direction === "left") {
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Left.png"), this.x+30, this.y, this.direction, .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+30, this.y, this.direction, .9));
         } else if(this.direction === "right") {
-            this.game.addEntity(new Bullet(this.game, AM.getAsset("./img/Bullet_Right.png"), this.x+30, this.y, this.direction, .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+30, this.y, this.direction, .9));
         }
+    }
+
+    for(i = 0; i < this.game.playerBullet.length; i++) {
+        bullet = this.game.playerBullet[i];
+        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+            this.hitBox.y < bullet.y + bullet.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+                bullet.removeFromWorld = true;
+                this.hp -= 1;
+        }
+    }
+
+    if(this.hp <= 0) {
+        this.removeFromWorld = true;
     }
 }
 
@@ -403,6 +572,11 @@ Turret.prototype.draw = function() {
     } else if(this.direction === "right") {
         this.rightAnim.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     }
+
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
+    
 }
 
 function GroundFire(game, fireSprite, xLoc, yLoc) {
@@ -633,6 +807,8 @@ AM.queueDownload("./img/Turret_Down.png");
 AM.queueDownload("./img/Turret_Left.png");
 AM.queueDownload("./img/Turret_Right.png");
 AM.queueDownload("./img/pebble.png");
+AM.queueDownload("./img/LaserUpDown.png");
+AM.queueDownload("./img/LaserLeftRight.png");
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
@@ -642,7 +818,7 @@ AM.downloadAll(function () {
     gameEngine.init(ctx);
     gameEngine.start();
     //AM.queueDownload("./img/Bullet_Up.png");
-    //    AM.queueDownload("./img/Bullet_Down.png");
+    //AM.queueDownload("./img/Bullet_Down.png");
     //AM.queueDownload("./img/Bullet_Left.png");
     //AM.queueDownload("./img/Bullet_Right.png");
     
@@ -655,27 +831,27 @@ AM.downloadAll(function () {
     gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
 
-    gameEngine.addEntity(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png")));
 
-    gameEngine.addEntity(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
-        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png")));
+    gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right"));
     gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
 
-    gameEngine.addEntity(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
         AM.getAsset("./img/Turret_Right.png"), "up", 683, 600));
     
-    gameEngine.addEntity(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
         AM.getAsset("./img/Turret_Right.png"), "down", 683, -30));
     
-    gameEngine.addEntity(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
         AM.getAsset("./img/Turret_Right.png"), "left", 1200, 350));
-    gameEngine.addEntity(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
         AM.getAsset("./img/Turret_Right.png"), "right", 50, 350));
-    gameEngine.addEntity(new PowerUp(gameEngine, AM.getAsset("./img/pebble.png"), 200, 200, 1,  1, 20, 1));
-                    //function PowerUp(game, powerUpSprite , theX, theY, health, frate, move, scale)
-    gameEngine.addEntity(new Ammo(gameEngine, AM.getAsset("./img/pebble.png"), 400, 400, "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", 
-    "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", 2, "test"));            
+    // gameEngine.addEntity(new PowerUp(gameEngine, AM.getAsset("./img/pebble.png"), 200, 200, 1,  1, 20, 1));
+    //                 //function PowerUp(game, powerUpSprite , theX, theY, health, frate, move, scale)
+    // gameEngine.addEntity(new Ammo(gameEngine, AM.getAsset("./img/pebble.png"), 400, 400, "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", 
+    // "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", 2, "test"));            
     //function Ammo(game, powerUpSprite , theX, theY, bUp, bDown, bLeft, bRight, bNW, bSW, bSE, bNE, scale, name) { 
     gameEngine.addEntity(new startText(gameEngine));
     gameEngine.addEntity(new scoreText(gameEngine));
