@@ -48,11 +48,27 @@ function Background(game, spritesheet) {
     this.spritesheet = spritesheet;
     this.game = game;
     this.ctx = game.ctx;
+    this.topHitBox = {x: 0, y: 0, width: 0, height: 0};
+    this.bottomHitBox = {x: 0, y: 0, width: 0, height: 0};
+    this.leftHitBox = {x: 0, y: 0, width: 0, height: 0};
+    this.rightHitBox = {x: 0, y: 0, width: 0, height: 0};
 };
 
 Background.prototype.draw = function () {
-    this.ctx.drawImage(this.spritesheet,
-                   this.x, this.y);
+    this.ctx.drawImage(this.spritesheet,this.x, this.y);
+    this.ctx.beginPath();
+    this.ctx.rect(this.topHitBox.x, this.topHitBox.y, this.topHitBox.width, this.topHitBox.height);
+    this.ctx.stroke();
+    this.ctx.beginPath();
+    this.ctx.rect(this.bottomHitBox.x, this.bottomHitBox.y, this.bottomHitBox.width, this.bottomHitBox.height);
+    this.ctx.stroke();
+    this.ctx.beginPath();
+    this.ctx.rect(this.leftHitBox.x, this.leftHitBox.y, this.leftHitBox.width, this.leftHitBox.height);
+    this.ctx.stroke();
+    this.ctx.beginPath();
+    this.ctx.rect(this.rightHitBox.x, this.rightHitBox.y, this.rightHitBox.width, this.rightHitBox.height);
+    this.ctx.stroke();
+    
 };
 
 Background.prototype.update = function () {
@@ -116,23 +132,68 @@ Raccoon.prototype.update = function () {
     if(this.game.started == false){
         return;
     }
+
+    topBound = false;
+    botBound = false;
+    leftBound = false;
+    rightBound = false;
+    bg = this.game.background[0];
+    if(this.hitBox.x < bg.topHitBox.x + bg.topHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.topHitBox.x && 
+        this.hitBox.y < bg.topHitBox.y + bg.topHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.topHitBox.y) {
+            topBound = true; 
+    }
+
+    if(this.hitBox.x < bg.bottomHitBox.x + bg.bottomHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.bottomHitBox.x && 
+        this.hitBox.y < bg.bottomHitBox.y + bg.bottomHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.bottomHitBox.y) {
+            botBound = true; 
+    }
+
+    if(this.hitBox.x < bg.leftHitBox.x + bg.leftHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.leftHitBox.x && 
+        this.hitBox.y < bg.leftHitBox.y + bg.leftHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.leftHitBox.y) {
+            leftBound = true; 
+    }
+
+    if(this.hitBox.x < bg.rightHitBox.x + bg.rightHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.rightHitBox.x && 
+        this.hitBox.y < bg.rightHitBox.y + bg.rightHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
+            rightBound = true; 
+    }
     if( this.game.keyPress["up"] ) {
-        this.y -= this.game.clockTick * this.speed;
+        if(!topBound) {
+            this.y -= this.game.clockTick * this.speed;
+        }
+        
         this.direction = "up";
         this.hitBox.y = this.y+33;
     }
     if( this.game.keyPress["down"]) {
-        this.y += this.game.clockTick * this.speed;
+        if(!botBound) {
+            this.y += this.game.clockTick * this.speed;
+        }
+
         this.direction = "down";
         this.hitBox.y = this.y+33;
     }
     if( this.game.keyPress["left"]) {
-        this.x -= this.game.clockTick * this.speed;
+        if(!leftBound) {
+            this.x -= this.game.clockTick * this.speed;
+        }
+
         this.direction = "left";
         this.hitBox.x = this.x+27;
     }
     if( this.game.keyPress["right"]) {
-        this.x += this.game.clockTick * this.speed;
+        if(!rightBound) {
+            this.x += this.game.clockTick * this.speed;
+        }
+        
         this.direction = "right";
         this.hitBox.x = this.x+27;
     }
@@ -173,18 +234,6 @@ Raccoon.prototype.update = function () {
 
     }
 
-    // if(this.game.entities[4].x > this.x){
-    //     if(this.game.entities[4].x - this.x <50){
-    //         if(this.game.entities[4].y - this.y < 50 && this.invincible == false){
-    //             this.time = Date.now();
-    //             this.hp -= 1;
-    //             if(this.hp <= 0){
-    //                 // this.game.started = false;
-    //             }
-    //             this.invincible = true;
-    //         }
-    //     }
-    // }
     if(Date.now() - this.time > 1000){
         this.invincible = false;
     }
@@ -210,6 +259,7 @@ Raccoon.prototype.update = function () {
                 this.hp -= 1;
         }
     }
+
 }
 
 function Bullet(game, spriteSheet, x, y, direction, scale) {
@@ -251,15 +301,33 @@ Bullet.prototype.update = function() {
         this.hitBox.x = this.x + 20;
     }
 
-    // for( i = 0; i < this.game.enemies.length; i++) {
-    //     enemy = this.game.enemies[i];
-    //     if(this.hitBox.x < enemy.hitBox.x + enemy.hitBox.width &&
-    //         this.hitBox.x + this.hitBox.width > enemy.hitBox.x && 
-    //         this.hitBox.y < enemy.y + enemy.hitBox.height &&
-    //         this.hitBox.height + this.hitBox.y > enemy.hitBox.y) {
-    //             this.removeFromWorld = true;
-    //     }
-    // }
+    if(this.hitBox.x < bg.topHitBox.x + bg.topHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.topHitBox.x && 
+        this.hitBox.y < bg.topHitBox.y + bg.topHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.topHitBox.y) {
+            this.removeFromWorld = true; 
+    }
+
+    if(this.hitBox.x < bg.bottomHitBox.x + bg.bottomHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.bottomHitBox.x && 
+        this.hitBox.y < bg.bottomHitBox.y + bg.bottomHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.bottomHitBox.y) {
+            this.removeFromWorld = true; 
+    }
+
+    if(this.hitBox.x < bg.leftHitBox.x + bg.leftHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.leftHitBox.x && 
+        this.hitBox.y < bg.leftHitBox.y + bg.leftHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.leftHitBox.y) {
+            this.removeFromWorld = true; 
+    }
+
+    if(this.hitBox.x < bg.rightHitBox.x + bg.rightHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.rightHitBox.x && 
+        this.hitBox.y < bg.rightHitBox.y + bg.rightHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
+            this.removeFromWorld = true; 
+    }
 }
 
 Bullet.prototype.draw = function() {
@@ -294,20 +362,65 @@ MeleeRobot.prototype.update = function() {
         return;
     }
 
+    topBound = false;
+    botBound = false;
+    leftBound = false;
+    rightBound = false;
+    bg = this.game.background[0];
+    if(this.hitBox.x < bg.topHitBox.x + bg.topHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.topHitBox.x && 
+        this.hitBox.y < bg.topHitBox.y + bg.topHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.topHitBox.y) {
+            topBound = true; 
+    }
+
+    if(this.hitBox.x < bg.bottomHitBox.x + bg.bottomHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.bottomHitBox.x && 
+        this.hitBox.y < bg.bottomHitBox.y + bg.bottomHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.bottomHitBox.y) {
+            botBound = true; 
+    }
+
+    if(this.hitBox.x < bg.leftHitBox.x + bg.leftHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.leftHitBox.x && 
+        this.hitBox.y < bg.leftHitBox.y + bg.leftHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.leftHitBox.y) {
+            leftBound = true; 
+    }
+
+    if(this.hitBox.x < bg.rightHitBox.x + bg.rightHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.rightHitBox.x && 
+        this.hitBox.y < bg.rightHitBox.y + bg.rightHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
+            rightBound = true; 
+    }
+
     if(this.y < this.game.player.y) {
-        this.y += this.game.clockTick * this.speed;
+        if(!botBound) {
+            this.y += this.game.clockTick * this.speed;
+        }
+        
         this.direction = "down"
     }
     if(this.y > this.game.player.y) {
-        this.y -= this.game.clockTick * this.speed;
+        if(!topBound) {
+            this.y -= this.game.clockTick * this.speed;
+        }
+        
         this.direction = "up";
     }
     if(this.x < this.game.player.x) {
-        this.x += this.game.clockTick * this.speed;
+        if(!rightBound) {
+            this.x += this.game.clockTick * this.speed;
+        }
+        
         this.direction = "right";
     }
     if (this.x > this.game.player.x) {
-        this.x -= this.game.clockTick * this.speed;
+        if(!leftBound) {
+            this.x -= this.game.clockTick * this.speed;
+        }
+        
         this.direction = "left";
     }
     // console.log(this.x - this.game.player.x);
@@ -533,13 +646,33 @@ Laser.prototype.update = function(){
         this.hitBox.x = this.x+9;
     }
 
-    // player = this.game.player;
-    // if(this.hitBox.x < player.hitBox.x + player.hitBox.width &&
-    //     this.hitBox.x + this.hitBox.width > player.hitBox.x && 
-    //     this.hitBox.y < player.y + player.hitBox.height &&
-    //     this.hitBox.height + this.hitBox.y > player.hitBox.y) {
-    //         this.removeFromWorld = true;
-    // }
+    if(this.hitBox.x < bg.topHitBox.x + bg.topHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.topHitBox.x && 
+        this.hitBox.y < bg.topHitBox.y + bg.topHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.topHitBox.y) {
+            this.removeFromWorld = true; 
+    }
+
+    if(this.hitBox.x < bg.bottomHitBox.x + bg.bottomHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.bottomHitBox.x && 
+        this.hitBox.y < bg.bottomHitBox.y + bg.bottomHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.bottomHitBox.y) {
+            this.removeFromWorld = true; 
+    }
+
+    if(this.hitBox.x < bg.leftHitBox.x + bg.leftHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.leftHitBox.x && 
+        this.hitBox.y < bg.leftHitBox.y + bg.leftHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.leftHitBox.y) {
+            this.removeFromWorld = true; 
+    }
+
+    if(this.hitBox.x < bg.rightHitBox.x + bg.rightHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.rightHitBox.x && 
+        this.hitBox.y < bg.rightHitBox.y + bg.rightHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
+            this.removeFromWorld = true; 
+    }
 }
 
 Laser.prototype.draw = function(){
@@ -853,6 +986,8 @@ AM.queueDownload("./img/Turret_Right.png");
 AM.queueDownload("./img/pebble.png");
 AM.queueDownload("./img/LaserUpDown.png");
 AM.queueDownload("./img/LaserLeftRight.png");
+AM.queueDownload("./img/FloorOneBackgroundCrop.png");
+
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
@@ -866,7 +1001,26 @@ AM.downloadAll(function () {
     //AM.queueDownload("./img/Bullet_Left.png");
     //AM.queueDownload("./img/Bullet_Right.png");
     
-    gameEngine.addEntity(new Background(gameEngine, AM.getAsset("./img/floor.png")));
+    bg = new Background(gameEngine, AM.getAsset("./img/FloorOneBackgroundCrop.png"));
+    bg.topHitBox.x = 0;
+    bg.topHitBox.y = 0;
+    bg.topHitBox.width = 910;
+    bg.topHitBox.height = 41;
+    bg.bottomHitBox.x = 0;
+    bg.bottomHitBox.y = 604;
+    bg.bottomHitBox.width = 910;
+    bg.bottomHitBox.height = 56;
+    bg.leftHitBox.x = 0;
+    bg.leftHitBox.y = 0;
+    bg.leftHitBox.width = 40;
+    bg.leftHitBox.height = 660;
+    bg.rightHitBox.x = 870;
+    bg.rightHitBox.y = 0;
+    bg.rightHitBox.width = 40;
+    bg.rightHitBox.height = 660;
+
+
+    gameEngine.background[0] = bg;
     gameEngine.addEntity(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
     gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/GreyRock.png"), 500, 350));
     gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
@@ -882,14 +1036,14 @@ AM.downloadAll(function () {
         AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right"));
     gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
 
-    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "up", 683, 600));
+    // gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    //     AM.getAsset("./img/Turret_Right.png"), "up", 683, 600));
     
-    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "down", 683, -30));
+    // gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    //     AM.getAsset("./img/Turret_Right.png"), "down", 683, -30));
     
-    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "left", 1200, 350));
+    // gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+        // AM.getAsset("./img/Turret_Right.png"), "left", 1200, 350));
     gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
         AM.getAsset("./img/Turret_Right.png"), "right", 50, 350));
     // gameEngine.addEntity(new PowerUp(gameEngine, AM.getAsset("./img/pebble.png"), 200, 200, 1,  1, 20, 1));

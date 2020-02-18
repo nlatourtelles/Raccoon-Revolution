@@ -21,6 +21,7 @@ function GameEngine() {
     this.clickedTest =null;
     this.started = null;
     this.score =0;
+    this.background = [];
 }
 
 GameEngine.prototype.setPlayer = function(player) {
@@ -167,6 +168,9 @@ GameEngine.prototype.addEnemy= function (entity) {
 GameEngine.prototype.draw = function () {
     this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
     this.ctx.save();
+    for(var i = 0; i < this.background.length; i++) {
+        this.background[i].draw(this.ctx);
+    }
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
     }
