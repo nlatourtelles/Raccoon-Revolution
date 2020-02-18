@@ -372,12 +372,13 @@ function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight, direction) {
     this.walkRight = new Animation(walkRight, 64, 64, 768, .15, 12, true, 2);
     this.game = game;
     this.ctx = game.ctx;
-    this.speed = 150;
+    this.speed = 80;
     this.hp = 4;
     this.x = 500;
     this.y = 50;
     this.lastShot = 0;
     this.direction = direction;
+    
     this.hitBox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
     this.upDownHitbox = {x: this.x+33, y: this.y+18, width: 57, height: 97};
     this.leftRightHitbox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
@@ -390,31 +391,72 @@ LaserRobot.prototype.update = function() {
         return;
     }
     currentTime = Date.now() / 1000;
-    if (this.x >=1241 &&  this.y < 650)  {
+    if(this.y < this.game.player.y) {
         this.y += this.game.clockTick * this.speed;
-        if(currentTime - this.lastShot >=1) {
+        if(currentTime - this.lastShot >= 1 && this.direction === "down") {
             this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+50, this.y+35, "down", .9));
             this.lastShot = currentTime;
         }
-    } else if (this.y >= 650 && this.x > 75 ) {
-        this.x -= this.game.clockTick * this.speed;
-        if(currentTime - this.lastShot >=1) {
-            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+50, this.y+35, "left", .9));
-            this.lastShot = currentTime;
-        }
-    } else if (this.x <=75 && this.y > 75) {
+        this.direction = "down";
+ 
+    }
+    if(this.y > this.game.player.y) {
         this.y -= this.game.clockTick * this.speed;
-        if(currentTime - this.lastShot >=1) {
+        if(currentTime - this.lastShot >= 1 && this.direction === "up") {
             this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+50, this.y+35, "up", .9));
             this.lastShot = currentTime;
         }
-    } else if (this.y <= 75 && this.x <= 1241) {
+        this.direction = "up";
+    }
+    if(this.x < this.game.player.x) {
         this.x += this.game.clockTick * this.speed;
-        if(currentTime - this.lastShot >=1) {
+        if(currentTime - this.lastShot >= 1) {
             this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+50, this.y+35, "right", .9));
             this.lastShot = currentTime;
         }
+        this.direction = "right";
     }
+    if (this.x > this.game.player.x) {
+        console.log("shoot ma lazar left");
+        console.log("my direction is " + this.direction);
+        this.x -= this.game.clockTick * this.speed;
+        if(currentTime - this.lastShot >= 1) {
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+50, this.y+35, "left", .9));
+            this.lastShot = currentTime;
+        }
+        this.direction = "left";
+    }
+    // console.log(this.x - this.game.player.x);
+
+    xDiff = Math.abs(this.x - this.game.player.x);
+    if (xDiff < 10) {
+        if(this.y < this.game.player.y) {
+            this.direction = "down"
+            // if(currentTime - this.lastShot >= 1 && this.direction === "down") {
+            //     this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+50, this.y+35, "down", .9));
+            //     this.lastShot = currentTime;
+            //}
+        }
+        if(this.y > this.game.player.y) {
+            this.direction = "up";
+            // if(currentTime - this.lastShot >= 1 && this.direction === "up") {
+            //     this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+50, this.y+35, "up", .9));
+            //     this.lastShot = currentTime;
+            //}
+        }
+  
+    }
+
+    if(this.direction === "up" || this.direction === "down") {
+        this.hitBox = this.upDownHitbox;
+        this.hitBox.x = this.x +33;
+        this.hitBox.y = this.y +18;
+    } else {
+        this.hitBox = this.leftRightHitbox;
+        this.hitBox.x = this.x+50;
+        this.hitBox.y = this.y+20;
+    }
+
 
 
     for(i = 0; i < this.game.playerBullet.length; i++) {
@@ -436,13 +478,15 @@ LaserRobot.prototype.update = function() {
 }
 
 LaserRobot.prototype.draw = function() {
-    if (this.x >=1241 &&  this.y < 650)  {
-        this.walkDown.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    } else if (this.y >= 650 && this.x > 75) {
-        this.walkLeft.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    } else if (this.x <=75 && this.y >75) {
+    
+    if(this.direction === "up") {
         this.walkUp.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    } else if (this.y <= 75 && this.x <= 1241) {
+  
+    } else if(this.direction === "down") {
+        this.walkDown.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if (this.direction === "left") {
+        this.walkLeft.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    } else if (this.direction === "right") {
         this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     }
 
