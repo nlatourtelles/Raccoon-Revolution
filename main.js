@@ -82,7 +82,7 @@ Background.prototype.update = function () {
  * @param {*} walkLeft Sprite sheet for the walk left animation
  * @param {*} walkRight Sprite sheet for the walk right animation
  */
-function Raccoon(game, walkUp, walkDown, walkLeft, walkRight) {
+function Raccoon(game, walkUp, walkDown, walkLeft, walkRight, xLoc, yLoc) {
     this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 2);
     this.walkDown = new Animation(walkDown, 64, 64, 768, .15, 12, true, 2);
     this.walkLeft = new Animation(walkLeft,64, 64, 512, .15, 8, true, 2);
@@ -91,8 +91,8 @@ function Raccoon(game, walkUp, walkDown, walkLeft, walkRight) {
     this.ctx =  game.ctx;
     this.speed = 150;
     this.hp = 4;
-    this.x = 50;
-    this.y = 50;
+    this.x = xLoc;
+    this.y = yLoc;
     this.direction = "right";
     this.lastShot = 0;
     this.invincible = false;
@@ -337,7 +337,7 @@ Bullet.prototype.draw = function() {
     this.ctx.stroke();
 }
 
-function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight) {
+function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight, xLoc, yLoc) {
     this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 2);
     this.walkDown = new Animation(walkDown, 64, 64, 512, .15, 8, true, 2);
     this.walkLeft = new Animation(walkLeft, 64, 64, 768, .15, 12, true, 2);
@@ -346,8 +346,8 @@ function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight) {
     this.ctx = game.ctx;
     this.speed = 100;
     this.hp = 4;
-    this.x = 50;
-    this.y = 300;
+    this.x = xLoc;
+    this.y = yLoc;
     this.direction = "right";
     this.removeFromWorld = false;
     this.hitBox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
@@ -957,6 +957,50 @@ scoreText.prototype.draw = function() {
         this.game.ctx.fillText("SCORE:  " + this.game.score, this.x, this.y);
 }
 
+
+function FloorOneRoomA(game) {
+    this.gameEngine = game;
+    bg = new Background(gameEngine, AM.getAsset("./img/FloorOneBackgroundCrop.png"));
+    bg.topHitBox.x = 0;
+    bg.topHitBox.y = 0;
+    bg.topHitBox.width = 910;
+    bg.topHitBox.height = 41;
+    bg.bottomHitBox.x = 0;
+    bg.bottomHitBox.y = 604;
+    bg.bottomHitBox.width = 910;
+    bg.bottomHitBox.height = 56;
+    bg.leftHitBox.x = 0;
+    bg.leftHitBox.y = 0;
+    bg.leftHitBox.width = 40;
+    bg.leftHitBox.height = 660;
+    bg.rightHitBox.x = 870;
+    bg.rightHitBox.y = 0;
+    bg.rightHitBox.width = 40;
+    bg.rightHitBox.height = 660;
+    gameEngine.background[0] = bg;
+
+    // gameEngine.addEntity(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
+    // gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/GreyRock.png"), 500, 350));
+    // gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
+    
+    
+    gameEngine.player.x = 400;
+    gameEngine.player.y = 500;
+    // gameEngine.player.hitBox.x = 400;
+    // gameEngine.player.hitBox.y = 500;
+
+    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 50, 50));
+
+    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 700, 50));
+    gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
+
+    // gameEngine.addEntity(new startText(gameEngine));
+    // gameEngine.addEntity(new scoreText(gameEngine));
+}
+
+
 //Queue All downloads
 AM.queueDownload("./img/floor.png");
 AM.queueDownload("./img/RaccoonWalk_Up.png");
@@ -996,62 +1040,64 @@ AM.downloadAll(function () {
     var gameEngine = new GameEngine();
     gameEngine.init(ctx);
     gameEngine.start();
+    gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
+        AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png"), 0, 0));
     //AM.queueDownload("./img/Bullet_Up.png");
     //AM.queueDownload("./img/Bullet_Down.png");
     //AM.queueDownload("./img/Bullet_Left.png");
     //AM.queueDownload("./img/Bullet_Right.png");
+    FloorOneRoomA(gameEngine);
+    // bg = new Background(gameEngine, AM.getAsset("./img/FloorOneBackgroundCrop.png"));
+    // bg.topHitBox.x = 0;
+    // bg.topHitBox.y = 0;
+    // bg.topHitBox.width = 910;
+    // bg.topHitBox.height = 41;
+    // bg.bottomHitBox.x = 0;
+    // bg.bottomHitBox.y = 604;
+    // bg.bottomHitBox.width = 910;
+    // bg.bottomHitBox.height = 56;
+    // bg.leftHitBox.x = 0;
+    // bg.leftHitBox.y = 0;
+    // bg.leftHitBox.width = 40;
+    // bg.leftHitBox.height = 660;
+    // bg.rightHitBox.x = 870;
+    // bg.rightHitBox.y = 0;
+    // bg.rightHitBox.width = 40;
+    // bg.rightHitBox.height = 660;
+
+
+    // gameEngine.background[0] = bg;
+    // gameEngine.addEntity(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
+    // gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/GreyRock.png"), 500, 350));
+    // gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
     
-    bg = new Background(gameEngine, AM.getAsset("./img/FloorOneBackgroundCrop.png"));
-    bg.topHitBox.x = 0;
-    bg.topHitBox.y = 0;
-    bg.topHitBox.width = 910;
-    bg.topHitBox.height = 41;
-    bg.bottomHitBox.x = 0;
-    bg.bottomHitBox.y = 604;
-    bg.bottomHitBox.width = 910;
-    bg.bottomHitBox.height = 56;
-    bg.leftHitBox.x = 0;
-    bg.leftHitBox.y = 0;
-    bg.leftHitBox.width = 40;
-    bg.leftHitBox.height = 660;
-    bg.rightHitBox.x = 870;
-    bg.rightHitBox.y = 0;
-    bg.rightHitBox.width = 40;
-    bg.rightHitBox.height = 660;
-
-
-    gameEngine.background[0] = bg;
-    gameEngine.addEntity(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
-    gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/GreyRock.png"), 500, 350));
-    gameEngine.addEntity(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
     
+    // gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
+    //     AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
+
+    // gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+    //     AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png")));
+
+    // gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+    //     AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right"));
+    // gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
+
+    // // gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    // //     AM.getAsset("./img/Turret_Right.png"), "up", 683, 600));
     
-    gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
-        AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
-
-    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
-        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png")));
-
-    gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
-        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right"));
-    gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
-
+    // // gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    // //     AM.getAsset("./img/Turret_Right.png"), "down", 683, -30));
+    
+    // // gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    //     // AM.getAsset("./img/Turret_Right.png"), "left", 1200, 350));
     // gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-    //     AM.getAsset("./img/Turret_Right.png"), "up", 683, 600));
-    
-    // gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-    //     AM.getAsset("./img/Turret_Right.png"), "down", 683, -30));
-    
-    // gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        // AM.getAsset("./img/Turret_Right.png"), "left", 1200, 350));
-    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "right", 50, 350));
-    // gameEngine.addEntity(new PowerUp(gameEngine, AM.getAsset("./img/pebble.png"), 200, 200, 1,  1, 20, 1));
-    //                 //function PowerUp(game, powerUpSprite , theX, theY, health, frate, move, scale)
-    // gameEngine.addEntity(new Ammo(gameEngine, AM.getAsset("./img/pebble.png"), 400, 400, "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", 
-    // "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", 2, "test"));            
-    //function Ammo(game, powerUpSprite , theX, theY, bUp, bDown, bLeft, bRight, bNW, bSW, bSE, bNE, scale, name) { 
-    gameEngine.addEntity(new startText(gameEngine));
-    gameEngine.addEntity(new scoreText(gameEngine));
-    console.log("All Done!");
+    //     AM.getAsset("./img/Turret_Right.png"), "right", 50, 350));
+    // // gameEngine.addEntity(new PowerUp(gameEngine, AM.getAsset("./img/pebble.png"), 200, 200, 1,  1, 20, 1));
+    // //                 //function PowerUp(game, powerUpSprite , theX, theY, health, frate, move, scale)
+    // // gameEngine.addEntity(new Ammo(gameEngine, AM.getAsset("./img/pebble.png"), 400, 400, "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", 
+    // // "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", "./img/Bullet_Down.png", 2, "test"));            
+    // //function Ammo(game, powerUpSprite , theX, theY, bUp, bDown, bLeft, bRight, bNW, bSW, bSE, bNE, scale, name) { 
+    // gameEngine.addEntity(new startText(gameEngine));
+    // gameEngine.addEntity(new scoreText(gameEngine));
+    // console.log("All Done!");
 });
