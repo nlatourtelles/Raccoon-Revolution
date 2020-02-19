@@ -9,7 +9,8 @@ window.requestAnimFrame = (function () {
             };
 })();
 
-function GameEngine() {
+function GameEngine(levelManager) {
+    this.levelManager = levelManager;
     this.entities = [];
     this.enemies = [];
     this.enemyProjectiles = [];
@@ -39,7 +40,7 @@ GameEngine.prototype.init = function (ctx) {
     this.clickedTest = true;
     this.started = false;
     this.ctx.font = "30px Comic Sans MS";
-    this.ctx.fillStyle = "green";
+    this.ctx.fillStyle = "blue";
 
     this.keyPress["up"] = false;
     this.keyPress["down"] = false;
@@ -60,6 +61,19 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.ctx.canvas);
     })();
+}
+
+GameEngine.prototype.removeAll = function(){
+    for(var i = 0; i < this.entities.length; i++){
+        this.entities[i].removeFromWorld = true;
+    }
+    this.player.removeFromWorld = true;
+
+    for(var i = 0; i < this.enemies.length; i++){
+        this.enemies[i].removeFromWorld = true;
+    }
+    //this.enemyProjectiles = [];
+    //this.playerBullet = [];
 }
 
 GameEngine.prototype.startInput = function () {
@@ -138,8 +152,8 @@ GameEngine.prototype.startInput = function () {
 
     this.ctx.canvas.addEventListener("click", function(){
         that.clickedTest = false; 
-        that.started = true;  
-
+        that.started = true;
+        that.levelManager.level ++;  
     });
 
     console.log('Input started');
@@ -148,6 +162,11 @@ GameEngine.prototype.startInput = function () {
 GameEngine.prototype.addEntity = function (entity) {
     console.log('added entity');
     this.entities.push(entity);
+}
+
+GameEngine.prototype.addBackground = function (entity) {
+    console.log('added background');
+    this.background.push(entity);
 }
 
 GameEngine.prototype.addPlayerBullet = function (entity) {
@@ -249,6 +268,10 @@ GameEngine.prototype.update = function () {
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
+    if(this.started == true && this.enemies.length == 0){
+        this.levelManager.nextLevel();
+    }
+    this.levelManager.update();
     this.update();
     this.draw();
 }
@@ -282,7 +305,7 @@ Entity.prototype.update = function () {
 Entity.prototype.draw = function (ctx) {
     if (this.game.showOutlines && this.radius) {
         this.game.ctx.beginPath();
-        this.game.ctx.strokeStyle = "green";
+        this.game.ctx.strokeStyle = "blue";
         this.game.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         this.game.ctx.stroke();
         this.game.ctx.closePath();
