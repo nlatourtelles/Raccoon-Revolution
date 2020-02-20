@@ -23,6 +23,7 @@ function GameEngine(levelManager) {
     this.started = null;
     this.score =0;
     this.background = [];
+    this.environment = [];
 }
 
 GameEngine.prototype.setPlayer = function(player) {
@@ -164,6 +165,11 @@ GameEngine.prototype.addEntity = function (entity) {
     this.entities.push(entity);
 }
 
+GameEngine.prototype.addEnvironment = function (entity) {
+    console.log('added entity');
+    this.environment.push(entity);
+}
+
 GameEngine.prototype.addBackground = function (entity) {
     console.log('added background');
     this.background.push(entity);
@@ -201,6 +207,9 @@ GameEngine.prototype.draw = function () {
     }
     for(var i = 0; i < this.playerBullet.length; i++) {
         this.playerBullet[i].draw(this.ctx);
+    }
+    for(var i = 0; i < this.environment.length; i++) {
+        this.environment[i].draw(this.ctx);
     }
     this.ctx.restore();
 }
@@ -262,6 +271,20 @@ GameEngine.prototype.update = function () {
     for (var i = this.enemies.length - 1; i >= 0; --i) {
         if (this.enemies[i].removeFromWorld) {
             this.enemies.splice(i, 1);
+        }
+    }
+
+    //update for environment list
+    var entitiesCount = this.environment.length;
+    for (var i = 0; i < entitiesCount; i++) {
+        var entity = this.environment[i];
+        if (!entity.removeFromWorld) {
+            entity.update();
+        }
+    }
+    for (var i = this.environment.length - 1; i >= 0; --i) {
+        if (this.environment[i].removeFromWorld) {
+            this.environment.splice(i, 1);
         }
     }
 }
