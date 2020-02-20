@@ -84,14 +84,14 @@ Background.prototype.update = function () {
  * @param {*} walkRight Sprite sheet for the walk right animation
  */
 function Raccoon(game, walkUp, walkDown, walkLeft, walkRight) {
-    this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 2);
-    this.walkDown = new Animation(walkDown, 64, 64, 768, .15, 12, true, 2);
-    this.walkLeft = new Animation(walkLeft,64, 64, 512, .15, 8, true, 2);
-    this.walkRight = new Animation(walkRight, 64, 64, 576, .15, 9, true, 2);
+    this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 1.5);
+    this.walkDown = new Animation(walkDown, 64, 64, 768, .15, 12, true, 1.5);
+    this.walkLeft = new Animation(walkLeft,64, 64, 512, .15, 8, true, 1.5);
+    this.walkRight = new Animation(walkRight, 64, 64, 576, .15, 9, true, 1.5);
     this.game = game;
     this.ctx =  game.ctx;
     this.speed = 150;
-    this.hp = 4;
+    this.hp = 40;
     this.x = 410;
     this.y = 480;
     this.direction = "right";
@@ -107,6 +107,7 @@ function Raccoon(game, walkUp, walkDown, walkLeft, walkRight) {
     this.bulletSW = {sprite: "none", direction: "SW", scale: .9};
     this.bulletNE = {sprite: "none", direction: "NE", scale: .9};
     this.bulletSE = {sprite: "none", direction: "SE", scale: .9};
+
     this.removeFromWorld = false;
     this.frate = 1000;
     this.health = 4;
@@ -170,13 +171,26 @@ Raccoon.prototype.update = function () {
         this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
             rightBound = true; 
     }
+
+    for(i = 0; i < this.game.environment.length; i++) {
+        envir = this.game.environment[i];
+        if(this.hitBox.x < envir.hitBox.x + envir.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > envir.hitBox.x && 
+            this.hitBox.y < envir.hitBox.y + envir.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > envir.hitBox.y) {
+                if(envir.dmg) {
+                    this.hp -= 1;
+                }
+        }
+    }
+
     if( this.game.keyPress["up"] ) {
         if(!topBound) {
             this.y -= this.game.clockTick * this.speed;
         }
         
         this.direction = "up";
-        this.hitBox.y = this.y+33;
+        this.hitBox.y = this.y+13;
     }
     if( this.game.keyPress["down"]) {
         if(!botBound) {
@@ -184,7 +198,7 @@ Raccoon.prototype.update = function () {
         }
 
         this.direction = "down";
-        this.hitBox.y = this.y+33;
+        this.hitBox.y = this.y+13;
     }
     if( this.game.keyPress["left"]) {
         if(!leftBound) {
@@ -277,6 +291,8 @@ Raccoon.prototype.update = function () {
            
         } 
 
+    }
+
     if(Date.now() - this.time > 1000){
         this.invincible = false;
     }
@@ -327,13 +343,13 @@ function Bullet(game, spriteSheet, x, y, direction, scale) {
     this.removeFromWorld = false;
     
     if(direction === "up") {
-        this.hitBox = {x: this.x+13, y: this.y, width: 30, height: 40};
+        this.hitBox = {x: this.x+12, y: this.y, width: 18, height: 30};
     } else if(direction === "down") {
-        this.hitBox = {x: this.x+13, y: this.y+20, width: 30, height: 40};
+        this.hitBox = {x: this.x+12, y: this.y+10, width: 18, height: 30};
     } else if(direction === "left") {
-        this.hitBox = {x: this.x, y: this.y+13, width: 40, height: 30};
+        this.hitBox = {x: this.x, y: this.y+13, width: 30, height: 18};
     } else if(direction === "right") {
-        this.hitBox = {x: this.x+20, y: this.y+13, width: 40, height: 30};
+        this.hitBox = {x: this.x+12, y: this.y+13, width: 30, height: 18};
     }
     
 
@@ -345,13 +361,13 @@ Bullet.prototype.update = function() {
         this.hitBox.y = this.y;
     } else if( this.direction === "down") {
         this.y += this.game.clockTick * this.speed;
-        this.hitBox.y = this.y + 20;
+        this.hitBox.y = this.y + 10;
     } else if( this.direction === "left") {
         this.x -= this.game.clockTick * this.speed;
         this.hitBox.x = this.x;
     } else if( this.direction === "right") {
         this.x += this.game.clockTick * this.speed;
-        this.hitBox.x = this.x + 20;
+        this.hitBox.x = this.x + 12;
     
     } else if( this.direction === "NW") {
     this.x -= this.game.clockTick * this.speed;
@@ -405,10 +421,12 @@ Bullet.prototype.draw = function() {
 }
 
 function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight,xloc,yloc) {
-    this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 2);
-    this.walkDown = new Animation(walkDown, 64, 64, 512, .15, 8, true, 2);
-    this.walkLeft = new Animation(walkLeft, 64, 64, 768, .15, 12, true, 2);
-    this.walkRight = new Animation(walkRight, 64, 64, 768, .15, 12, true, 2);
+
+    this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 1.5);
+    this.walkDown = new Animation(walkDown, 64, 64, 512, .15, 8, true, 1.5);
+    this.walkLeft = new Animation(walkLeft, 64, 64, 768, .15, 12, true, 1.5);
+    this.walkRight = new Animation(walkRight, 64, 64, 768, .15, 12, true, 1.5);
+
     this.game = game;
     this.ctx = game.ctx;
     this.speed = 100;
@@ -417,9 +435,9 @@ function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight,xloc,yloc) {
     this.y = yloc;
     this.direction = "right";
     this.removeFromWorld = false;
-    this.hitBox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
-    this.upDownHitbox = {x: this.x+33, y: this.y+18, width: 57, height: 97};
-    this.leftRightHitbox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
+    this.hitBox = {x: this.x+50, y: this.y+20, width: 20, height: 77};
+    this.upDownHitbox = {x: this.x+25, y: this.y+16, width: 42, height: 72};
+    this.leftRightHitbox = {x: this.x+40, y: this.y+10, width: 20, height: 77};
 
     
 }
@@ -461,6 +479,7 @@ MeleeRobot.prototype.update = function() {
         this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
             rightBound = true; 
     }
+
 
     if(this.y < this.game.player.y) {
         if(!botBound) {
@@ -504,12 +523,12 @@ MeleeRobot.prototype.update = function() {
 
     if(this.direction === "up" || this.direction === "down") {
         this.hitBox = this.upDownHitbox;
-        this.hitBox.x = this.x +33;
-        this.hitBox.y = this.y +18;
+        this.hitBox.x = this.x +25;
+        this.hitBox.y = this.y +16;
     } else {
         this.hitBox = this.leftRightHitbox;
-        this.hitBox.x = this.x+50;
-        this.hitBox.y = this.y+20;
+        this.hitBox.x = this.x+40;
+        this.hitBox.y = this.y+10;
     }
 
     for(i = 0; i < this.game.playerBullet.length; i++) {
@@ -546,10 +565,10 @@ MeleeRobot.prototype.draw = function() {
 
 function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight, direction, xloc, yloc) {
 
-    this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 2);
-    this.walkDown = new Animation(walkDown, 64, 64, 512, .15, 8, true, 2);
-    this.walkLeft = new Animation(walkLeft, 64, 64, 768, .15, 12, true, 2);
-    this.walkRight = new Animation(walkRight, 64, 64, 768, .15, 12, true, 2);
+    this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 1.5);
+    this.walkDown = new Animation(walkDown, 64, 64, 512, .15, 8, true, 1.5);
+    this.walkLeft = new Animation(walkLeft, 64, 64, 768, .15, 12, true, 1.5);
+    this.walkRight = new Animation(walkRight, 64, 64, 768, .15, 12, true, 1.5);
     this.game = game;
     this.ctx = game.ctx;
     this.speed = 80;
@@ -559,9 +578,11 @@ function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight, direction, xloc
     this.lastShot = 0;
     this.direction = direction;
     
-    this.hitBox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
-    this.upDownHitbox = {x: this.x+33, y: this.y+18, width: 57, height: 97};
-    this.leftRightHitbox = {x: this.x+50, y: this.y+20, width: 29, height: 97};
+
+    this.hitBox = {x: this.x+50, y: this.y+20, width: 20, height: 77};
+    this.upDownHitbox = {x: this.x+25, y: this.y+16, width: 42, height: 72};
+    this.leftRightHitbox = {x: this.x+40, y: this.y+10, width: 20, height: 77};
+
     this.removeFromWorld = false;
 }
 
@@ -574,7 +595,8 @@ LaserRobot.prototype.update = function() {
     if(this.y < this.game.player.y) {
         this.y += this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >= 1 && this.direction === "down") {
-            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+50, this.y+35, "down", .9));
+
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+25, this.y+35, "down", .65));
             this.lastShot = currentTime;
         }
         this.direction = "down";
@@ -583,7 +605,8 @@ LaserRobot.prototype.update = function() {
     if(this.y > this.game.player.y) {
         this.y -= this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >= 1 && this.direction === "up") {
-            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+50, this.y+35, "up", .9));
+
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+25, this.y+35, "up", .65));
             this.lastShot = currentTime;
         }
         this.direction = "up";
@@ -591,7 +614,7 @@ LaserRobot.prototype.update = function() {
     if(this.x < this.game.player.x) {
         this.x += this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >= 1) {
-            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+50, this.y+35, "right", .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+50, this.y+35, "right", .65));
             this.lastShot = currentTime;
         }
         this.direction = "right";
@@ -601,7 +624,8 @@ LaserRobot.prototype.update = function() {
         console.log("my direction is " + this.direction);
         this.x -= this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >= 1) {
-            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+50, this.y+35, "left", .9));
+
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+25, this.y+35, "left", .65));
             this.lastShot = currentTime;
         }
         this.direction = "left";
@@ -629,12 +653,12 @@ LaserRobot.prototype.update = function() {
 
     if(this.direction === "up" || this.direction === "down") {
         this.hitBox = this.upDownHitbox;
-        this.hitBox.x = this.x +33;
-        this.hitBox.y = this.y +18;
+        this.hitBox.x = this.x +25;
+        this.hitBox.y = this.y +16;
     } else {
         this.hitBox = this.leftRightHitbox;
-        this.hitBox.x = this.x+50;
-        this.hitBox.y = this.y+20;
+        this.hitBox.x = this.x+40;
+        this.hitBox.y = this.y+10;
     }
 
 
@@ -688,13 +712,13 @@ function Laser(game, spriteSheet, xLoc, yLoc, direction, scale) {
     this.removeFromWorld = false;
 
     if(direction === "up") {
-        this.hitBox = {x: this.x+21, y: this.y, width: 15, height: 40};
+        this.hitBox = {x: this.x+17, y: this.y, width: 9, height: 25};
     } else if(direction === "down") {
-        this.hitBox = {x: this.x+21, y: this.y, width: 15, height: 40};
+        this.hitBox = {x: this.x+17, y: this.y, width: 9, height: 25};
     } else if(direction === "left") {
-        this.hitBox = {x: this.x, y: this.y+21, width: 40, height: 15};
+        this.hitBox = {x: this.x, y: this.y+17, width: 25, height: 9};
     } else if(direction === "right") {
-        this.hitBox = {x: this.x, y: this.y+21, width: 40, height: 15};
+        this.hitBox = {x: this.x, y: this.y+17, width: 25, height: 9};
     }
 }
 
@@ -750,10 +774,10 @@ Laser.prototype.draw = function(){
 }
 
 function Turret(game, lookUp, lookDown, lookLeft, lookRight, direction, xLoc, yLoc) {
-    this.upAnim = new Animation(lookUp, 64, 64, 128, .15, 2, true, 2);
-    this.downAnim = new Animation(lookDown, 64, 64, 192, .15, 3, true, 2);
-    this.leftAnim = new Animation(lookLeft, 64, 64, 192, .15, 3, true, 2);
-    this.rightAnim = new Animation(lookRight, 64, 64, 192, .15, 3, true, 2);
+    this.upAnim = new Animation(lookUp, 64, 64, 128, .15, 2, true, 1.5);
+    this.downAnim = new Animation(lookDown, 64, 64, 192, .15, 3, true, 1.5);
+    this.leftAnim = new Animation(lookLeft, 64, 64, 192, .15, 3, true, 1.5);
+    this.rightAnim = new Animation(lookRight, 64, 64, 192, .15, 3, true, 1.5);
     this.direction = direction;
     this.x = xLoc;
     this.y = yLoc;
@@ -763,11 +787,11 @@ function Turret(game, lookUp, lookDown, lookLeft, lookRight, direction, xLoc, yL
     this.ctx = game.ctx;
     this.removeFromWorld = false;
     if(this.direction === "up" || this.direction === "down"){
-        this.hitBox = {x: this.x+40, y: this.y+27, width: 50, height: 97};
+        this.hitBox = {x: this.x+30, y: this.y+25, width: 40, height: 70};
     } else if(this.direction === "left") {
-        this.hitBox = {x: this.x+50, y: this.y+15, width: 50, height: 97};
+        this.hitBox = {x: this.x+25, y: this.y+15, width: 50, height: 70};
     } else {
-        this.hitBox = {x: this.x+25, y: this.y+15, width: 50, height: 97};
+        this.hitBox = {x: this.x+25, y: this.y+15, width: 50, height: 70};
     }
     
 }
@@ -780,13 +804,13 @@ Turret.prototype.update = function() {
     if(currentTime - this.lastShot >=5) {
         this.lastShot = currentTime;
         if(this.direction === "up") {
-            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+30, this.y, this.direction, .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+28, this.y, this.direction, .65));
         } else if(this.direction === "down") {
-            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+30, this.y, this.direction, .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+28, this.y+72, this.direction, .65));
         } else if(this.direction === "left") {
-            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+30, this.y, this.direction, .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+15, this.y+5, this.direction, .65));
         } else if(this.direction === "right") {
-            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+30, this.y, this.direction, .9));
+            this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+45, this.y+5, this.direction, .65));
         }
     }
 
@@ -823,12 +847,68 @@ Turret.prototype.draw = function() {
     
 }
 
+function Drone(game, sprite, xLoc, yLoc) {
+    this.droneAnim = new Animation(sprite, 64, 64, 512, 1, 8, true, 1);
+    this.ctx = game.ctx;
+    this.game = game;
+    this.x = xLoc;
+    this.y = yLoc;
+    this.hp = 4;
+    this.hitBox = {x: this.x, y: this.y, width: 64, height: 64};
+    this.removeFromWorld = false;
+}
+
+Drone.prototype.update = function() {
+
+    // if(this.game.started == false){
+    //     return;
+    // }
+
+    if(this.y < this.game.player.y) {
+            this.y += this.game.clockTick * this.speed;
+    }
+    if(this.y > this.game.player.y) {
+            this.y -= this.game.clockTick * this.speed;
+    }
+    if(this.x < this.game.player.x) {
+            this.x += this.game.clockTick * this.speed;
+    }
+    if (this.x > this.game.player.x) {
+            this.x -= this.game.clockTick * this.speed;
+    }
+
+    for(i = 0; i < this.game.playerBullet.length; i++) {
+        bullet = this.game.playerBullet[i];
+        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+            this.hitBox.y < bullet.y + bullet.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+                bullet.removeFromWorld = true;
+                this.hp -= 1;
+        }
+    }
+
+    if(this.hp <= 0) {
+        this.removeFromWorld = true;
+    }
+
+}
+
+Drone.prototype.draw = function() {
+    this.droneAnim.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    // this.ctx.beginPath();
+    // this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    // this.ctx.stroke();
+}
+
 function GroundFire(game, fireSprite, xLoc, yLoc) {
-    this.fireAnimation = new Animation (fireSprite, 128, 128, 768, .15, 6, true, 1);
+    this.fireAnimation = new Animation (fireSprite, 128, 128, 768, .15, 6, true, .75);
     this.game = game;
     this.ctx = game.ctx;
     this.x = xLoc;
     this.y = yLoc;
+    this.hitBox = {x: this.x+24, y: this.y+20, width: 50, height: 70};
+    this.dmg = true;
 }
 
 GroundFire.prototype.update = function() {
@@ -837,6 +917,9 @@ GroundFire.prototype.update = function() {
 
 GroundFire.prototype.draw = function() {
     this.fireAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
 }
 
 function Rock(game, rockSprite, xLoc, yLoc) {
@@ -845,6 +928,8 @@ function Rock(game, rockSprite, xLoc, yLoc) {
     this.ctx = game.ctx;
     this.x = xLoc;
     this.y = yLoc;
+    this.hitBox = {x: this.x+5, y: this.y+5, width: 55, height: 48};
+    this.dmg = false;
 }
 
 Rock.prototype.update = function(){
@@ -853,6 +938,9 @@ Rock.prototype.update = function(){
 
 Rock.prototype.draw = function() {
     this.rockAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
 }
 
 function Health(game, healthSprite, xLoc, yLoc) {
@@ -1034,4 +1122,4 @@ scoreText.prototype.draw = function() {
 
 
 
-    levelManager.init();
+levelManager.init();
