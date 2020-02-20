@@ -98,11 +98,16 @@ function Raccoon(game, walkUp, walkDown, walkLeft, walkRight) {
     this.lastShot = 0;
     this.invincible = false;
     this.invincibleTIme = 0;
-    this.hitBox = {x: this.x+33, y: this.y+13, width: 48, height: 64};
-    this.bulletUp = {sprite: "./img/Bullet_Up.png", direction: "up", scale: .65};
-    this.bulletDown = {sprite: "./img/Bullet_Down.png", direction: "down", scale: .65};
-    this.bulletRight = {sprite: "./img/Bullet_Right.png", direction: "right", scale: .65};
-    this.bulletLeft =  {sprite: "./img/Bullet_Left.png", direction: "left", scale: .65};
+    this.hitBox = {x: this.x+33, y: this.y+27, width: 64, height: 64};
+    this.bulletUp = {sprite: "./img/Bullet_Up.png", direction: "up", scale: .9};
+    this.bulletDown = {sprite: "./img/Bullet_Down.png", direction: "down", scale: .9};
+    this.bulletRight = {sprite: "./img/Bullet_Right.png", direction: "right", scale: .9};
+    this.bulletLeft =  {sprite: "./img/Bullet_Left.png", direction: "left", scale: .9};
+    this.bulletNW = {sprite: "none", direction: "NW", scale: .9};
+    this.bulletSW = {sprite: "none", direction: "SW", scale: .9};
+    this.bulletNE = {sprite: "none", direction: "NE", scale: .9};
+    this.bulletSE = {sprite: "none", direction: "SE", scale: .9};
+
     this.removeFromWorld = false;
     this.frate = 1000;
     this.health = 4;
@@ -218,8 +223,17 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
+            if(this.bulletUp.sprite != "none") {
+                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletUp.sprite), this.x+32, this.y, this.bulletUp.direction, this.bulletUp.scale));
+            } 
+            if(this.bulletNW.sprite != "none") {
+                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletNW.sprite), this.x+32, this.y, this.bulletNW.direction, this.bulletNW.scale));
+            }
+            if(this.bulletNE.sprite != "none") {
+                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletNE.sprite), this.x+32, this.y, this.bulletNE.direction, this.bulletNE.scale));
+            }
+           
    
-            this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletUp.sprite), this.x+32, this.y, this.bulletUp.direction, this.bulletUp.scale));
         }  
          
     }else if( this.game.keyPress["shootDown"]) {
@@ -227,7 +241,17 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-            this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletDown.sprite), this.x + 32, this.y+64, this.bulletDown.direction, this.bulletDown.scale));
+            if(this.bulletDown.sprite != "none") {
+                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletDown.sprite), this.x + 32, this.y+64, this.bulletDown.direction, this.bulletDown.scale));
+            }
+            if(this.bulletSW.sprite != "none") {
+                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletSW.sprite), this.x+32, this.y+64, this.bulletSW.direction, this.bulletSW.scale));
+            }
+            if(this.bulletSE.sprite != "none") {
+                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletSE.sprite), this.x+32, this.y+64, this.bulletSE.direction, this.bulletSE.scale));
+            }
+            
+            
         } 
 
     } else if(this.game.keyPress["shootLeft"]) {
@@ -235,7 +259,17 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-            this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletLeft.sprite), this.x, this.y+35, this.bulletLeft.direction, this.bulletLeft.scale));
+            if(this.bulletLeft.sprite != "none") {
+                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletLeft.sprite), this.x, this.y+35, this.bulletLeft.direction, this.bulletLeft.scale));
+            }
+            if(this.bulletSW.sprite != "none") {
+                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletSW.sprite), this.x+32, this.y+64, this.bulletSW.direction, this.bulletSW.scale));
+            }
+            if(this.bulletNW.sprite != "none") {
+                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletNW.sprite), this.x+32, this.y, this.bulletNW.direction, this.bulletNW.scale));
+            }
+            
+            
         } 
 
     }else if(this.game.keyPress["shootRight"]) {
@@ -243,7 +277,18 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-            this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletRight.sprite), this.x+50, this.y+35, this.bulletRight.direction, this.bulletRight.scale));
+        
+            if(this.bulletRight.sprite != "none") {
+                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletRight.sprite), this.x+50, this.y+35, this.bulletRight.direction, this.bulletRight.scale));
+            } 
+                if(this.bulletSE.sprite != "none") {
+                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletSE.sprite), this.x+32, this.y+64, this.bulletSE.direction, this.bulletSE.scale));
+                }
+                if(this.bulletNE.sprite != "none") {
+                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletNE.sprite), this.x+32, this.y, this.bulletNE.direction, this.bulletNE.scale));
+                }
+            
+           
         } 
 
     }
@@ -323,7 +368,21 @@ Bullet.prototype.update = function() {
     } else if( this.direction === "right") {
         this.x += this.game.clockTick * this.speed;
         this.hitBox.x = this.x + 12;
-    }
+    
+    } else if( this.direction === "NW") {
+    this.x -= this.game.clockTick * this.speed;
+    this.y -= this.game.clockTick * this.speed;
+
+    } else if(this.direction === "SW") {
+    this.x -= this.game.clockTick * this.speed;
+    this.y += this.game.clockTick * this.speed;
+    } else if(this.direction === "SE") {
+    this.x += this.game.clockTick * this.speed;
+    this.y += this.game.clockTick * this.speed;
+    } else if(this.direction === "NE") {
+    this.x += this.game.clockTick * this.speed;
+    this.y -= this.game.clockTick * this.speed;
+}
 
     if(this.hitBox.x < bg.topHitBox.x + bg.topHitBox.width &&
         this.hitBox.x + this.hitBox.width > bg.topHitBox.x && 
@@ -362,10 +421,12 @@ Bullet.prototype.draw = function() {
 }
 
 function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight,xloc,yloc) {
+
     this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 1.5);
     this.walkDown = new Animation(walkDown, 64, 64, 512, .15, 8, true, 1.5);
     this.walkLeft = new Animation(walkLeft, 64, 64, 768, .15, 12, true, 1.5);
     this.walkRight = new Animation(walkRight, 64, 64, 768, .15, 12, true, 1.5);
+
     this.game = game;
     this.ctx = game.ctx;
     this.speed = 100;
@@ -419,7 +480,6 @@ MeleeRobot.prototype.update = function() {
             rightBound = true; 
     }
 
-    
 
     if(this.y < this.game.player.y) {
         if(!botBound) {
@@ -518,9 +578,11 @@ function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight, direction, xloc
     this.lastShot = 0;
     this.direction = direction;
     
+
     this.hitBox = {x: this.x+50, y: this.y+20, width: 20, height: 77};
     this.upDownHitbox = {x: this.x+25, y: this.y+16, width: 42, height: 72};
     this.leftRightHitbox = {x: this.x+40, y: this.y+10, width: 20, height: 77};
+
     this.removeFromWorld = false;
 }
 
@@ -533,6 +595,7 @@ LaserRobot.prototype.update = function() {
     if(this.y < this.game.player.y) {
         this.y += this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >= 1 && this.direction === "down") {
+
             this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+25, this.y+35, "down", .65));
             this.lastShot = currentTime;
         }
@@ -542,6 +605,7 @@ LaserRobot.prototype.update = function() {
     if(this.y > this.game.player.y) {
         this.y -= this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >= 1 && this.direction === "up") {
+
             this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+25, this.y+35, "up", .65));
             this.lastShot = currentTime;
         }
@@ -560,6 +624,7 @@ LaserRobot.prototype.update = function() {
         console.log("my direction is " + this.direction);
         this.x -= this.game.clockTick * this.speed;
         if(currentTime - this.lastShot >= 1) {
+
             this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+25, this.y+35, "left", .65));
             this.lastShot = currentTime;
         }
@@ -967,6 +1032,10 @@ Ammo.prototype.update = function() {
                 this.game.player.bulletLeft.sprite = this.BulletLeft;
                 this.game.player.bulletRight.sprite = this.BulletRight;
                 console.log("AMMO WORK THIS WORKED");
+                this.game.player.bulletNW.sprite = this.bNW;
+                this.game.player.bulletNE.sprite = this.bNE;
+                this.game.player.bulletSW.sprite = this.bSW;
+                this.game.player.bulletSE.sprite = this.bSE;
             
             
             this.removeFromWorld = true;
