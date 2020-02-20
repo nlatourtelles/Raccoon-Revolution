@@ -84,6 +84,7 @@ levelManager.prototype.update = function(){
 levelManager.prototype.level1 = function(){
     gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
+    
     gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
     this.gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 50, 450));
@@ -179,6 +180,10 @@ levelManager.prototype.init = function(){
     AM.queueDownload("./img/LaserLeftRight.png");
     AM.queueDownload("./img/FloorOneBackgroundCrop.png");
     AM.queueDownload("./img/Drone.png");
+    AM.queueDownload("./img/BulletNE.png");
+    AM.queueDownload("./img/BulletNW.png");
+    AM.queueDownload("./img/BulletSE.png");
+    AM.queueDownload("./img/BulletSW.png");
 
 
 AM.downloadAll(function () {
