@@ -103,10 +103,10 @@ function Raccoon(game, walkUp, walkDown, walkLeft, walkRight) {
     this.bulletDown = {sprite: "./img/Bullet_Down.png", direction: "down", scale: .65};
     this.bulletRight = {sprite: "./img/Bullet_Right.png", direction: "right", scale: .65};
     this.bulletLeft =  {sprite: "./img/Bullet_Left.png", direction: "left", scale: .65};
-    this.bulletNW = {sprite: "./img/BulletNW.png", direction: "NW", scale: .65};
-    this.bulletSW = {sprite: "./img/BulletSW.png", direction: "SW", scale: .65};
-    this.bulletNE = {sprite: "./img/BulletNE.png", direction: "NE", scale: .65};
-    this.bulletSE = {sprite: "./img/BulletSE.png", direction: "SE", scale: .65};
+    this.bulletNW = {sprite: "none", direction: "NW", scale: .65};
+    this.bulletSW = {sprite: "none", direction: "SW", scale: .65};
+    this.bulletNE = {sprite: "none", direction: "NE", scale: .65};
+    this.bulletSE = {sprite: "none", direction: "SE", scale: .65};
     this.removeFromWorld = false;
     this.frate = 1000;
     this.health = 4;
