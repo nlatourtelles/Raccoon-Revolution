@@ -98,17 +98,17 @@ function Raccoon(game, walkUp, walkDown, walkLeft, walkRight) {
     this.lastShot = 0;
     this.invincible = false;
     this.invincibleTIme = 0;
-    this.hitBox = {x: this.x+33, y: this.y+27, width: 64, height: 64};
-    this.bulletUp = {sprite: "./img/Bullet_Up.png", direction: "up", scale: .9};
-    this.bulletDown = {sprite: "./img/Bullet_Down.png", direction: "down", scale: .9};
-    this.bulletRight = {sprite: "./img/Bullet_Right.png", direction: "right", scale: .9};
-    this.bulletLeft =  {sprite: "./img/Bullet_Left.png", direction: "left", scale: .9};
-    this.bulletNW = {sprite: "none", direction: "NW", scale: .9};
-    this.bulletSW = {sprite: "none", direction: "SW", scale: .9};
-    this.bulletNE = {sprite: "none", direction: "NE", scale: .9};
-    this.bulletSE = {sprite: "none", direction: "SE", scale: .9};
-
+    this.hitBox = {x: this.x+33, y: this.y+13, width: 48, height: 64};
+    this.bulletUp = {sprite: "./img/Bullet_Up.png", direction: "up", scale: .65};
+    this.bulletDown = {sprite: "./img/Bullet_Down.png", direction: "down", scale: .65};
+    this.bulletRight = {sprite: "./img/Bullet_Right.png", direction: "right", scale: .65};
+    this.bulletLeft =  {sprite: "./img/Bullet_Left.png", direction: "left", scale: .65};
+    this.bulletNW = {sprite: "none", direction: "NW", scale: .65};
+    this.bulletSW = {sprite: "none", direction: "SW", scale: .65};
+    this.bulletNE = {sprite: "none", direction: "NE", scale: .65};
+    this.bulletSE = {sprite: "none", direction: "SE", scale: .65};
     this.removeFromWorld = false;
+    this.knockback = false;
     this.frate = 1000;
     this.health = 4;
 }
@@ -128,10 +128,6 @@ Raccoon.prototype.draw = function () {
     this.ctx.beginPath();
     this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
     this.ctx.stroke();
-    // this.ctx.beginPath();
-    // this.ctx.arc(this.hitBox.x, this.hitBox.y, 40, 0, 1.5*Math.PI);
-    // this.ctx.stroke();
-    // this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
 }
 
 Raccoon.prototype.update = function () {
@@ -178,9 +174,39 @@ Raccoon.prototype.update = function () {
             this.hitBox.x + this.hitBox.width > envir.hitBox.x && 
             this.hitBox.y < envir.hitBox.y + envir.hitBox.height &&
             this.hitBox.height + this.hitBox.y > envir.hitBox.y) {
-                if(envir.dmg) {
-                    this.hp -= 1;
+                if(this.invincible == false){
+                    if(envir.dmg) {
+                        this.hp -= 1;
+                        this.time = Date.now();
+                    }
+               
                 }
+                if(this.direction == "down" && !envir.dmg && !topBound) {
+                    this.y -= 20;
+                    this.hitBox.y = this.y-20;
+              
+                    
+                    
+                } else if(this.direction == "up" && !envir.dmg && !botBound) {
+                    this.y += 20;
+                    this.hitBox.y = this.y+20;
+                  
+                } else if(this.direction == "right" && !envir.dmg && !leftBound) {
+                    this.x -= 20;
+                    this.hitBox.x = this.x-20;
+                  
+            
+                  
+                }else if(this.direction == "left" && !envir.dmg && !rightBound) {
+                    this.x += 20;
+                    this.hitBox.x = this.x+20;
+                   
+                }
+                //this.knockback = true;
+                if(envir.dmg) {
+                    this.invincible = true;
+                }
+                
         }
     }
 
@@ -223,17 +249,16 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
+   
             if(this.bulletUp.sprite != "none") {
-                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletUp.sprite), this.x+32, this.y, this.bulletUp.direction, this.bulletUp.scale));
+                this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletUp.sprite), this.x+32, this.y, this.bulletUp.direction, this.bulletUp.scale));
             } 
             if(this.bulletNW.sprite != "none") {
-                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletNW.sprite), this.x+32, this.y, this.bulletNW.direction, this.bulletNW.scale));
+                this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletNW.sprite), this.x+32, this.y, "NW", this.bulletNW.scale));
             }
             if(this.bulletNE.sprite != "none") {
-                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletNE.sprite), this.x+32, this.y, this.bulletNE.direction, this.bulletNE.scale));
+                this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletNE.sprite), this.x+32, this.y, "NE", this.bulletNE.scale));
             }
-           
-   
         }  
          
     }else if( this.game.keyPress["shootDown"]) {
@@ -242,16 +267,14 @@ Raccoon.prototype.update = function () {
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
             if(this.bulletDown.sprite != "none") {
-                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletDown.sprite), this.x + 32, this.y+64, this.bulletDown.direction, this.bulletDown.scale));
+                this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletDown.sprite), this.x + 32, this.y+64, this.bulletDown.direction, this.bulletDown.scale));
             }
             if(this.bulletSW.sprite != "none") {
-                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletSW.sprite), this.x+32, this.y+64, this.bulletSW.direction, this.bulletSW.scale));
+                this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletSW.sprite), this.x+32, this.y+64, "SW", this.bulletSW.scale));
             }
             if(this.bulletSE.sprite != "none") {
-                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletSE.sprite), this.x+32, this.y+64, this.bulletSE.direction, this.bulletSE.scale));
+                this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletSE.sprite), this.x+32, this.y+64, "SE", this.bulletSE.scale));
             }
-            
-            
         } 
 
     } else if(this.game.keyPress["shootLeft"]) {
@@ -260,16 +283,14 @@ Raccoon.prototype.update = function () {
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
             if(this.bulletLeft.sprite != "none") {
-                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletLeft.sprite), this.x, this.y+35, this.bulletLeft.direction, this.bulletLeft.scale));
+                this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletLeft.sprite), this.x, this.y+35, this.bulletLeft.direction, this.bulletLeft.scale));
             }
             if(this.bulletSW.sprite != "none") {
-                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletSW.sprite), this.x+32, this.y+64, this.bulletSW.direction, this.bulletSW.scale));
+                    this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletSW.sprite), this.x+32, this.y+64, "SW", this.bulletSW.scale));
             }
             if(this.bulletNW.sprite != "none") {
-                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletNW.sprite), this.x+32, this.y, this.bulletNW.direction, this.bulletNW.scale));
+                    this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletNW.sprite), this.x+32, this.y, "NW", this.bulletNW.scale));
             }
-            
-            
         } 
 
     }else if(this.game.keyPress["shootRight"]) {
@@ -277,24 +298,22 @@ Raccoon.prototype.update = function () {
         
         if(currentTime - this.lastShot >= .5) {
             this.lastShot = currentTime;
-        
             if(this.bulletRight.sprite != "none") {
-                this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletRight.sprite), this.x+50, this.y+35, this.bulletRight.direction, this.bulletRight.scale));
+                this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletRight.sprite), this.x+50, this.y+35, this.bulletRight.direction, this.bulletRight.scale));
             } 
-                if(this.bulletSE.sprite != "none") {
-                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletSE.sprite), this.x+32, this.y+64, this.bulletSE.direction, this.bulletSE.scale));
-                }
-                if(this.bulletNE.sprite != "none") {
-                    this.game.addEntity(new Bullet(this.game, AM.getAsset(this.bulletNE.sprite), this.x+32, this.y, this.bulletNE.direction, this.bulletNE.scale));
-                }
-            
-           
+            if(this.bulletSE.sprite != "none") {
+                this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletSE.sprite), this.x+32, this.y+64, "SE", this.bulletSE.scale));
+            }
+            if(this.bulletNE.sprite != "none") {
+                this.game.addPlayerBullet(new Bullet(this.game, AM.getAsset(this.bulletNE.sprite), this.x+32, this.y, "NE", this.bulletNE.scale));
+            }
         } 
 
     }
 
     if(Date.now() - this.time > 1000){
         this.invincible = false;
+        
     }
 
     for( i = 0; i < this.game.enemyProjectiles.length; i++) {
@@ -308,6 +327,23 @@ Raccoon.prototype.update = function () {
                 if(this.invincible == false){
                     this.hp -= 1;
                     this.time = Date.now();
+                }
+  
+                if(this.game.enemyProjectiles[i].direction == "down") {
+                    this.y += 10;
+                    this.hitBox.y = this.y+10;
+                    console.log("hiting down");
+                } else if(this.game.enemyProjectiles[i].direction == "up") {
+                    this.y -= 13;
+                    this.hitBox.y = this.y-10;
+    
+                } else if(this.game.enemyProjectiles[i].direction == "right") {
+                    this.x += 27;
+                    this.hitBox.x = this.x+10;
+                }else if(this.game.enemyProjectiles[i].direction == "left") {
+                    this.x -= 27;
+                    this.hitBox.x = this.x-10;
+    
                 }
                 this.invincible = true;
                 proj.removeFromWorld = true;
@@ -324,7 +360,30 @@ Raccoon.prototype.update = function () {
                 if(this.invincible == false){
                     this.hp -= 1;
                     this.time = Date.now();
+                }               
+                if(this.game.enemies[i].direction == "down") {
+                    if(!topBound && !leftBound && !rightBound && !botBound) {
+                        this.y += 10;
+                        this.hitBox.y = this.y+10;
+                    }
+           
+                } else if(this.game.enemies[i].direction == "up") {
+                    if(!topBound && !leftBound && !rightBound && !botBound) {
+                        this.y -= this.game.clockTick * this.speed;
+                        this.hitBox.y = this.y-10;
+                    }
+                } else if(this.game.enemies[i].direction == "right") {
+                    if(!topBound && !leftBound && !rightBound && !botBound) {
+                        this.x += 10;
+                        this.hitBox.x = this.x+10;
+                    }
+                }else if(this.game.enemies[i].direction == "left") {
+                    if(!topBound && !leftBound && !rightBound && !botBound) {
+                        this.x -= 10;
+                        this.hitBox.x = this.x-10;
+                    }
                 }
+
                 this.invincible = true;
         }
     }
@@ -350,6 +409,14 @@ function Bullet(game, spriteSheet, x, y, direction, scale) {
         this.hitBox = {x: this.x, y: this.y+13, width: 30, height: 18};
     } else if(direction === "right") {
         this.hitBox = {x: this.x+12, y: this.y+13, width: 30, height: 18};
+    } else if(direction === "NE") {
+        this.hitBox = {x: this.x +12, y: this.y, width: 30, height: 30};
+    } else if(direction === "NW") {
+        this.hitBox = {x: this.x+12, y: this.y, width: 30, height: 30};
+    } else if(direction === "SE") {
+        this.hitBox = {x: this.x+12, y: this.y, width: 30, height: 30};
+    } else if(direction === "SW") {
+        this.hitBox = {x: this.x+12, y: this.y, width: 30, height: 30};
     }
     
 
@@ -368,22 +435,30 @@ Bullet.prototype.update = function() {
     } else if( this.direction === "right") {
         this.x += this.game.clockTick * this.speed;
         this.hitBox.x = this.x + 12;
-    
     } else if( this.direction === "NW") {
-    this.x -= this.game.clockTick * this.speed;
-    this.y -= this.game.clockTick * this.speed;
-
+        this.x -= this.game.clockTick * this.speed;
+        this.y -= this.game.clockTick * this.speed;
+        this.hitBox.x = this.x;
+        this.hitBox.y = this.y;
+    
     } else if(this.direction === "SW") {
-    this.x -= this.game.clockTick * this.speed;
-    this.y += this.game.clockTick * this.speed;
+        this.x -= this.game.clockTick * this.speed;
+        this.y += this.game.clockTick * this.speed;
+        this.hitBox.x = this.x;
+        this.hitBox.y = this.y+12;
     } else if(this.direction === "SE") {
-    this.x += this.game.clockTick * this.speed;
-    this.y += this.game.clockTick * this.speed;
+        this.x += this.game.clockTick * this.speed;
+        this.y += this.game.clockTick * this.speed;
+        this.hitBox.x = this.x+12;
+        this.hitBox.y = this.y+12;
     } else if(this.direction === "NE") {
-    this.x += this.game.clockTick * this.speed;
-    this.y -= this.game.clockTick * this.speed;
-}
-
+        this.x += this.game.clockTick * this.speed;
+        this.y -= this.game.clockTick * this.speed;
+        this.hitBox.x = this.x+12;
+        this.hitBox.y = this.y;
+    }
+    console.log(this.direction);
+    console.log(this.x);
     if(this.hitBox.x < bg.topHitBox.x + bg.topHitBox.width &&
         this.hitBox.x + this.hitBox.width > bg.topHitBox.x && 
         this.hitBox.y < bg.topHitBox.y + bg.topHitBox.height &&
@@ -421,18 +496,18 @@ Bullet.prototype.draw = function() {
 }
 
 function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight,xloc,yloc) {
-
     this.walkUp = new Animation(walkUp, 64, 64, 512, .15, 8, true, 1.5);
     this.walkDown = new Animation(walkDown, 64, 64, 512, .15, 8, true, 1.5);
     this.walkLeft = new Animation(walkLeft, 64, 64, 768, .15, 12, true, 1.5);
     this.walkRight = new Animation(walkRight, 64, 64, 768, .15, 12, true, 1.5);
-
     this.game = game;
     this.ctx = game.ctx;
     this.speed = 100;
     this.hp = 4;
     this.x = xloc;
+    this.canMove = true;
     this.y = yloc;
+    this.type = "robot";
     this.direction = "right";
     this.removeFromWorld = false;
     this.hitBox = {x: this.x+50, y: this.y+20, width: 20, height: 77};
@@ -446,7 +521,7 @@ MeleeRobot.prototype.update = function() {
     if(this.game.started == false){
         return;
     }
-
+    
     topBound = false;
     botBound = false;
     leftBound = false;
@@ -480,31 +555,91 @@ MeleeRobot.prototype.update = function() {
             rightBound = true; 
     }
 
+    for(var i = 0; i < this.game.enemies.length; i++) {
+        enemy = this.game.enemies[i];
+        if(this.hitBox.x < enemy.hitBox.x + enemy.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > enemy.hitBox.x && 
+            this.hitBox.y < enemy.y + enemy.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > enemy.hitBox.y && enemy.type != "drone") {
+      
+            this.canMove = false;
+            console.log("the melee has been stopped up");
+         } else {
+             this.canMove = true;
+        }
+
+
+    }
+    for(var i = 0; i < this.game.environment.length; i++) {
+        eni = this.game.environment[i];
+        if(this.hitBox.x < eni.hitBox.x + eni.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > eni.hitBox.x && 
+            this.hitBox.y < eni.y + eni.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > eni.hitBox.y) {
+                if(!eni.dmg) {
+                    this.canMove = false;
+                }else{
+                    this.canMove = true;
+                }
+           
+            console.log("the melee has been stopped up");
+         } else {
+             this.canMove = true;
+        }
+    }
 
     if(this.y < this.game.player.y) {
         if(!botBound) {
-            this.y += this.game.clockTick * this.speed;
+            
+            if(this.canMove) {
+                this.y += this.game.clockTick * this.speed;
+            } else {
+                this.y -= this.game.clockTick * this.speed;
+               // this.canMove = true;
+            }
+         
         }
         
         this.direction = "down"
     }
+  
     if(this.y > this.game.player.y) {
         if(!topBound) {
-            this.y -= this.game.clockTick * this.speed;
+     
+    
+            if(this.canMove) {
+                this.y -= this.game.clockTick * this.speed;
+            } else {
+                this.y += this.game.clockTick * this.speed;
+                //this.canMove = true;
+            }
         }
         
         this.direction = "up";
     }
     if(this.x < this.game.player.x) {
         if(!rightBound) {
-            this.x += this.game.clockTick * this.speed;
+  
+            if(this.canMove) {
+                this.x += this.game.clockTick * this.speed;
+            
+            } else {
+               this.x -= this.game.clockTick * this.speed;
+                //this.canMove = true;
+            }
         }
         
         this.direction = "right";
     }
     if (this.x > this.game.player.x) {
         if(!leftBound) {
-            this.x -= this.game.clockTick * this.speed;
+  
+            if(this.canMove) {
+                this.x -= this.game.clockTick * this.speed;
+            } else {
+                this.x += this.game.clockTick * this.speed;
+                //this.canMove = true;
+            }
         }
         
         this.direction = "left";
@@ -541,7 +676,7 @@ MeleeRobot.prototype.update = function() {
                 this.hp -= 1;
         }
     }
-
+    this.canMove = true;
     if(this.hp <= 0) {
         this.removeFromWorld = true;
     }
@@ -558,6 +693,7 @@ MeleeRobot.prototype.draw = function() {
     } else if (this.direction === "right") {
         this.walkRight.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
     }
+    this.canMove = true;
     this.ctx.beginPath();
     this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
     this.ctx.stroke();
@@ -577,12 +713,10 @@ function LaserRobot(game, walkUp, walkDown, walkLeft, walkRight, direction, xloc
     this.y = yloc;
     this.lastShot = 0;
     this.direction = direction;
-    
-
+    this.type = "lrobot";
     this.hitBox = {x: this.x+50, y: this.y+20, width: 20, height: 77};
     this.upDownHitbox = {x: this.x+25, y: this.y+16, width: 42, height: 72};
     this.leftRightHitbox = {x: this.x+40, y: this.y+10, width: 20, height: 77};
-
     this.removeFromWorld = false;
 }
 
@@ -591,11 +725,65 @@ LaserRobot.prototype.update = function() {
     if(this.game.started == false){
         return;
     }
+    topBound = false;
+    botBound = false;
+    leftBound = false;
+    rightBound = false;
+    bg = this.game.background[0];
+    if(this.hitBox.x < bg.topHitBox.x + bg.topHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.topHitBox.x && 
+        this.hitBox.y < bg.topHitBox.y + bg.topHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.topHitBox.y) {
+            topBound = true; 
+    }
+
+    if(this.hitBox.x < bg.bottomHitBox.x + bg.bottomHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.bottomHitBox.x && 
+        this.hitBox.y < bg.bottomHitBox.y + bg.bottomHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.bottomHitBox.y) {
+            botBound = true; 
+    }
+
+    if(this.hitBox.x < bg.leftHitBox.x + bg.leftHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.leftHitBox.x && 
+        this.hitBox.y < bg.leftHitBox.y + bg.leftHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.leftHitBox.y) {
+            leftBound = true; 
+    }
+
+    if(this.hitBox.x < bg.rightHitBox.x + bg.rightHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.rightHitBox.x && 
+        this.hitBox.y < bg.rightHitBox.y + bg.rightHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
+            rightBound = true; 
+    }
+    for(var i = 0; i < this.game.environment.length; i++) {
+        eni = this.game.environment[i];
+        if(this.hitBox.x < eni.hitBox.x + eni.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > eni.hitBox.x && 
+            this.hitBox.y < eni.y + eni.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > eni.hitBox.y) {
+                if(!eni.dmg) {
+                    this.canMove = false;
+                }else{
+                    this.canMove = true;
+                }
+           
+            console.log("the melee has been stopped up");
+         } else {
+             this.canMove = true;
+        }
+    }
     currentTime = Date.now() / 1000;
     if(this.y < this.game.player.y) {
-        this.y += this.game.clockTick * this.speed;
-        if(currentTime - this.lastShot >= 1 && this.direction === "down") {
 
+        if(this.canMove) {
+            this.y += this.game.clockTick * this.speed;
+
+        }else {
+            this.y -= this.game.clockTick * this.speed;
+        }
+        if(currentTime - this.lastShot >= 1 && this.direction === "down") {
             this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+25, this.y+35, "down", .65));
             this.lastShot = currentTime;
         }
@@ -603,16 +791,25 @@ LaserRobot.prototype.update = function() {
  
     }
     if(this.y > this.game.player.y) {
-        this.y -= this.game.clockTick * this.speed;
-        if(currentTime - this.lastShot >= 1 && this.direction === "up") {
+        if(this.canMove) {
+            this.y -= this.game.clockTick * this.speed;
+          }else {
+            this.y += this.game.clockTick * this.speed;
+        }
 
+        if(currentTime - this.lastShot >= 1 && this.direction === "up") {
             this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+25, this.y+35, "up", .65));
             this.lastShot = currentTime;
         }
         this.direction = "up";
     }
     if(this.x < this.game.player.x) {
-        this.x += this.game.clockTick * this.speed;
+        if(this.canMove) {
+            this.x += this.game.clockTick * this.speed;
+        
+        }else {
+            this.x -= this.game.clockTick * this.speed;
+        }
         if(currentTime - this.lastShot >= 1) {
             this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+50, this.y+35, "right", .65));
             this.lastShot = currentTime;
@@ -620,11 +817,14 @@ LaserRobot.prototype.update = function() {
         this.direction = "right";
     }
     if (this.x > this.game.player.x) {
-        console.log("shoot ma lazar left");
-        console.log("my direction is " + this.direction);
-        this.x -= this.game.clockTick * this.speed;
+        //console.log("shoot ma lazar left");
+        //console.log("my direction is " + this.direction);
+        if(this.canMove) {
+            this.x -= this.game.clockTick * this.speed;
+        } else {
+            this.x += this.game.clockTick * this.speed;
+        }
         if(currentTime - this.lastShot >= 1) {
-
             this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+25, this.y+35, "left", .65));
             this.lastShot = currentTime;
         }
@@ -661,7 +861,7 @@ LaserRobot.prototype.update = function() {
         this.hitBox.y = this.y+10;
     }
 
-
+  
 
     for(i = 0; i < this.game.playerBullet.length; i++) {
         bullet = this.game.playerBullet[i];
@@ -673,7 +873,7 @@ LaserRobot.prototype.update = function() {
                 this.hp -= 1;
         }
     }
-
+    this.canMove = true;
     if(this.hp <= 0) {
         this.removeFromWorld = true;
     }
@@ -785,6 +985,7 @@ function Turret(game, lookUp, lookDown, lookLeft, lookRight, direction, xLoc, yL
     this.hp = 4;
     this.lastShot = 0;
     this.ctx = game.ctx;
+    this.type = "turret";
     this.removeFromWorld = false;
     if(this.direction === "up" || this.direction === "down"){
         this.hitBox = {x: this.x+30, y: this.y+25, width: 40, height: 70};
@@ -853,8 +1054,11 @@ function Drone(game, sprite, xLoc, yLoc) {
     this.game = game;
     this.x = xLoc;
     this.y = yLoc;
+    this.type = "drone";
     this.hp = 4;
-    this.hitBox = {x: this.x, y: this.y, width: 64, height: 64};
+    this.speed = 50;
+    this.direction = "right";
+    this.hitBox = {x: this.x, y: this.y, width: 50, height: 32};
     this.removeFromWorld = false;
 }
 
@@ -865,16 +1069,25 @@ Drone.prototype.update = function() {
     // }
 
     if(this.y < this.game.player.y) {
-            this.y += this.game.clockTick * this.speed;
+        this.y += this.game.clockTick * this.speed;
+        this.hitBox.y = this.y+15;
+        this.direction = "down";
     }
     if(this.y > this.game.player.y) {
-            this.y -= this.game.clockTick * this.speed;
+        this.y -= this.game.clockTick * this.speed;
+        this.hitBox.y = this.y+15;
+        this.direction = "up";
+        
     }
     if(this.x < this.game.player.x) {
-            this.x += this.game.clockTick * this.speed;
+        this.x += this.game.clockTick * this.speed;
+        this.hitBox.x = this.x+6;
+        this.direction = "right";
     }
     if (this.x > this.game.player.x) {
-            this.x -= this.game.clockTick * this.speed;
+        this.x -= this.game.clockTick * this.speed;
+        this.hitBox.x = this.x+6;
+        this.direction = "left";
     }
 
     for(i = 0; i < this.game.playerBullet.length; i++) {
@@ -896,9 +1109,9 @@ Drone.prototype.update = function() {
 
 Drone.prototype.draw = function() {
     this.droneAnim.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    // this.ctx.beginPath();
-    // this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
-    // this.ctx.stroke();
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
 }
 
 function GroundFire(game, fireSprite, xLoc, yLoc) {
@@ -912,8 +1125,28 @@ function GroundFire(game, fireSprite, xLoc, yLoc) {
 }
 
 GroundFire.prototype.update = function() {
-
+    for(i = 0; i < this.game.playerBullet.length; i++) {
+        bullet = this.game.playerBullet[i];
+        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+            this.hitBox.y < bullet.y + bullet.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+                bullet.removeFromWorld = true;
+            
+        }
+    }
+    for(i = 0; i < this.game.enemyProjectiles.length; i++) {
+        bullet = this.game.enemyProjectiles[i];
+        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+            this.hitBox.y < bullet.y + bullet.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+                bullet.removeFromWorld = true;
+            
+        }
+    }
 }
+
 
 GroundFire.prototype.draw = function() {
     this.fireAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
@@ -933,6 +1166,26 @@ function Rock(game, rockSprite, xLoc, yLoc) {
 }
 
 Rock.prototype.update = function(){
+    for(i = 0; i < this.game.playerBullet.length; i++) {
+        bullet = this.game.playerBullet[i];
+        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+            this.hitBox.y < bullet.y + bullet.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+                bullet.removeFromWorld = true;
+            
+        }
+    }
+    for(i = 0; i < this.game.enemyProjectiles.length; i++) {
+        bullet = this.game.enemyProjectiles[i];
+        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+            this.hitBox.y < bullet.y + bullet.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+                bullet.removeFromWorld = true;
+            
+        }
+    }
 
 }
 

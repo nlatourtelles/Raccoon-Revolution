@@ -64,7 +64,7 @@ levelManager.prototype.menu = function(){
     bg.rightHitBox.y = 0;
     bg.rightHitBox.width = 40;
     bg.rightHitBox.height = 660;
-
+    
     gameEngine.addEntity(new startText(gameEngine));
     gameEngine.addEntity(new scoreText(gameEngine));
 }
@@ -85,11 +85,11 @@ levelManager.prototype.level1 = function(){
     gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
     gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
+   
     this.gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 50, 450));
     this.gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
         AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
-
     this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
     this.gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
     this.gameEngine.addEnvironment(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
@@ -179,11 +179,12 @@ levelManager.prototype.init = function(){
     AM.queueDownload("./img/LaserUpDown.png");
     AM.queueDownload("./img/LaserLeftRight.png");
     AM.queueDownload("./img/FloorOneBackgroundCrop.png");
+    AM.queueDownload("./img/Drone.png");
     AM.queueDownload("./img/BulletNE.png");
     AM.queueDownload("./img/BulletNW.png");
     AM.queueDownload("./img/BulletSE.png");
     AM.queueDownload("./img/BulletSW.png");
-    AM.queueDownload("./img/Drone.png");
+
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
@@ -210,7 +211,6 @@ AM.downloadAll(function () {
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
 
     that.enemies.push(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
-    AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png")));
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png")));
     that.enemies.push(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
         AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right"));
