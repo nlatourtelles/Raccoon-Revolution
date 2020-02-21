@@ -933,12 +933,47 @@ FinalBoss.prototype.update = function() {
     if(this.hp <= 0) {
         this.removeFromWorld = true;
     }
-    currentTime = Date.now() / 1000;
-    if(currentTime - this.lastShot > 5) {
-        lastShot = currentTime;
-        this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
-        this.x + 50, this.y + 50, 100, 100));
+
+    if(this.hp > 20) {
+        currentTime = Date.now() / 1000;
+        if(currentTime - this.lastShot > 2) {
+            this.lastShot = currentTime;
+            spot = 0;
+            for(i = 0; i < 2; i++) {
+                spot = Math.floor(Math.random() * 5);
+                if(spot === 0) {
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 25, this.y + 75, 100, 100));
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 25, this.y + 75, -100, 100));
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 25, this.y + 75, 0, 100));
+                } else if(spot === 1) {
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 50, this.y + 150, 100, 100));
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 50, this.y + 150, -100, 100));
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 50, this.y + 150, 0, 100));
+                } else if(spot === 2) {
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 100, this.y + 150, 100, 100));
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 100, this.y + 150, -100, 100));
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 100, this.y + 150, 0, 100));
+                } else if(spot === 3) {
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 125, this.y + 75, 100, 100));
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 125, this.y + 75, -100, 100));
+                    this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+                        this.x + 125, this.y + 75, 0, 100));
+                }
+            }        
     }
+    }
+    
     
     // console.log("Added bullet");
 }
@@ -959,15 +994,15 @@ function LaserCircle(game, laserAnim, xLoc, yLoc, xChange, yChange) {
     this.y = yLoc;
     this.xChange = xChange;
     this.yChange = yChange;
-    this.hitBox = {x: this.x, y: this.y, width: 64, height: 64};
+    this.hitBox = {x: this.x+10, y: this.y+10, width: 20, height: 20};
 }
 
 LaserCircle.prototype.update = function() {
 
     this.x += this.game.clockTick * this.xChange;
     this.y += this.game.clockTick * this.yChange;
-    this.hitBox.x = this.x;
-    this.hitBox.y = this.y;
+    this.hitBox.x = this.x+10;
+    this.hitBox.y = this.y+10;
 
     if(this.hitBox.x < bg.topHitBox.x + bg.topHitBox.width &&
         this.hitBox.x + this.hitBox.width > bg.topHitBox.x && 
