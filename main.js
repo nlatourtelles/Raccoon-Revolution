@@ -905,6 +905,108 @@ Drone.prototype.draw = function() {
     this.ctx.stroke();
 }
 
+function FinalBoss(game, sprite, xLoc, yLoc) {
+    this.bossAnim = new Animation(sprite, 256, 256, 1024, 1, 4, true, .75);
+    this.ctx = game.ctx;
+    this.game = game;
+    this.x = xLoc;
+    this.y = yLoc;
+    this.hp = 50;
+    this.removeFromWorld = false;
+    this.lastShot = 0;
+    this.hitBox = {x: this.x+30, y: this.y+34, width: 131, height: 136};
+}
+
+FinalBoss.prototype.update = function() {
+
+    for(i = 0; i < this.game.playerBullet.length; i++) {
+        bullet = this.game.playerBullet[i];
+        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+            this.hitBox.y < bullet.y + bullet.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+                bullet.removeFromWorld = true;
+                this.hp -= 1;
+        }
+    }
+
+    if(this.hp <= 0) {
+        this.removeFromWorld = true;
+    }
+    currentTime = Date.now() / 1000;
+    if(currentTime - this.lastShot > 5) {
+        lastShot = currentTime;
+        this.game.addEnemyProj(new LaserCircle(this.game, AM.getAsset("./img/LaserCirc.png"), 
+        this.x + 50, this.y + 50, 100, 100));
+    }
+    
+    // console.log("Added bullet");
+}
+
+FinalBoss.prototype.draw = function() {
+    this.bossAnim.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
+
+}
+
+function LaserCircle(game, laserAnim, xLoc, yLoc, xChange, yChange) {
+    this.lcAnim = new Animation (laserAnim, 64, 64, 128, 1, 2, true, .65);
+    this.game = game;
+    this.ctx = game.ctx;
+    this.x = xLoc;
+    this.y = yLoc;
+    this.xChange = xChange;
+    this.yChange = yChange;
+    this.hitBox = {x: this.x, y: this.y, width: 64, height: 64};
+}
+
+LaserCircle.prototype.update = function() {
+
+    this.x += this.game.clockTick * this.xChange;
+    this.y += this.game.clockTick * this.yChange;
+    this.hitBox.x = this.x;
+    this.hitBox.y = this.y;
+
+    if(this.hitBox.x < bg.topHitBox.x + bg.topHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.topHitBox.x && 
+        this.hitBox.y < bg.topHitBox.y + bg.topHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.topHitBox.y) {
+            this.removeFromWorld = true; 
+    }
+
+    if(this.hitBox.x < bg.bottomHitBox.x + bg.bottomHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.bottomHitBox.x && 
+        this.hitBox.y < bg.bottomHitBox.y + bg.bottomHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.bottomHitBox.y) {
+            this.removeFromWorld = true; 
+    }
+
+    if(this.hitBox.x < bg.leftHitBox.x + bg.leftHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.leftHitBox.x && 
+        this.hitBox.y < bg.leftHitBox.y + bg.leftHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.leftHitBox.y) {
+            this.removeFromWorld = true; 
+    }
+
+    if(this.hitBox.x < bg.rightHitBox.x + bg.rightHitBox.width &&
+        this.hitBox.x + this.hitBox.width > bg.rightHitBox.x && 
+        this.hitBox.y < bg.rightHitBox.y + bg.rightHitBox.height &&
+        this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
+            this.removeFromWorld = true; 
+    }
+
+}
+
+LaserCircle.prototype.draw = function() {
+    this.lcAnim.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+
+    this.ctx.beginPath();
+    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    this.ctx.stroke();
+}
+
 function GroundFire(game, fireSprite, xLoc, yLoc) {
     this.fireAnimation = new Animation (fireSprite, 128, 128, 768, .15, 6, true, .75);
     this.game = game;

@@ -91,6 +91,7 @@ levelManager.prototype.level1 = function(){
     this.gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
         AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
     this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
+    this.gameEngine.addEnemy(new FinalBoss(gameEngine, AM.getAsset("./img/FinalBoss.png"), 250, 250));
     this.gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
     this.gameEngine.addEnvironment(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
 }
@@ -184,6 +185,8 @@ levelManager.prototype.init = function(){
     AM.queueDownload("./img/BulletNW.png");
     AM.queueDownload("./img/BulletSE.png");
     AM.queueDownload("./img/BulletSW.png");
+    AM.queueDownload("./img/FinalBoss.png");
+    AM.queueDownload("./img/LaserCirc.png");
 
 
 AM.downloadAll(function () {
