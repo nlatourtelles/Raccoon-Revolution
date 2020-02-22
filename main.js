@@ -1427,12 +1427,13 @@ Health.prototype.draw = function() {
     }
 }
 //for stat based power ups
-function PowerUp(game, powerUpSprite , theX, theY, health, frate, move, scale) { 
+function PowerUp(game, powerUpSprite , theX, theY, sheetWidth, theframes, health, frate, move, scale) { 
     this.x = theX;
     this.y = theY;
     this.game = game;
     this.ctx = game.ctx;
-    this.PowerUpAnimation = new Animation(powerUpSprite, 64, 64, 64, 1, 1, true, 1);
+    
+    this.PowerUpAnimation = new Animation(powerUpSprite, 64, 64, sheetWidth, 1, theframes, true, 1);
     this.hitBox = {x: theX, y: theY, width: 64, height: 64};
 
     this.healthUpgrade = health;
@@ -1519,7 +1520,7 @@ function teleporter(game, powerUpSprite , theX, theY, scale){
     this.game = game;
     this.ctx = game.ctx;
     this.scale = scale;
-    this.PowerUpAnimation = new Animation(powerUpSprite, 64, 64, 64, 1, 1, true, 1);
+    this.PowerUpAnimation = new Animation(powerUpSprite, 64, 64, 512, .5, 8, true, 1);
     this.hitBox = {x: theX, y: theY, width: 64, height: 64};
 }
 

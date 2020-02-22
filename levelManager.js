@@ -18,7 +18,7 @@ levelManager.prototype.nextLevel = function(){
     if(this.level > 0 ){
         if(this.level == 2 || this.level == 4 || this.level == 6 || this.level == 8 ||this.level == 10){
        
-            for(i = 0; i < this.gameEngine.environment.length;i++) {
+            for(i = 0; i < this.gameEngine.environment.length; i++) {
                 this.gameEngine.environment[i].removeFromWorld = true;
             }
             this.levelTeleport();
@@ -92,6 +92,7 @@ levelManager.prototype.update = function(){
         this.gameEngine.clickedTest = true;
         this.gameEngine.player = null;
     }
+   // console.log("the level is " + this.level);
 }
 
 
@@ -163,17 +164,27 @@ levelManager.prototype.level6 = function(){
 }
 
 levelManager.prototype.levelTeleport = function(){
-
-    if(this.level === "3") {
+    console.log("the level is " + this.level);
+    if(this.level === 6) {
+        console.log("ammo should pop up");
         this.gameEngine.addEnemy(new Ammo(gameEngine, AM.getAsset("./img/ThreeTimesBox.png") , 100, 100,"./img/Bullet_Up.png",
         "./img/Bullet_Down.png", "./img/Bullet_Left.png", "./img/Bullet_Right.png", "./img/BulletNW.png", 
         "./img/BulletSW.png", "./img/BulletSE.png", "./img/BulletNE.png", .65, "triple"));
     }
-    //var health = new PowerUp(gameEngine, AM.getAsset("./img/GarbagePU.png"), 706, 100, 2, 1, 0, 1);
-    //var frate = new PowerUp(gameEngine, AM.getAsset("./img/GarbagePU.png"), 706, 100, 2, .5, 0, 1);
-   // var speed = new PowerUp(gameEngine, AM.getAsset("./img/GarbagePU.png"), 706, 100, 2, 1, 10, 1);
-
-    this.gameEngine.addEnemy(new PowerUp(gameEngine, AM.getAsset("./img/GarbagePU.png"), 706, 100, 2, 1, 0, 1));
+    
+    console.log("the after level is " + this.level);
+    var health = new PowerUp(gameEngine, AM.getAsset("./img/GarbagePU.png"), 706, 100, 488, 7, 2, 1, 0, 1);
+    var frate = new PowerUp(gameEngine, AM.getAsset("./img/BumpStock.png"), 706, 100, 256, 4, 1, .5, 0, 1);
+    var speed = new PowerUp(gameEngine, AM.getAsset("./img/CottonCandy.png"), 706, 100, 64, 1, 1, 1, 10, 1);
+    var chance = Math.floor((Math.random() * 100) + 1);
+    console.log("chance is " + chance);
+    if(chance > 66) {
+        this.gameEngine.addEnemy(health);
+    } else if ( chance < 33) {
+        this.gameEngine.addEnemy(frate);
+    }else{
+        this.gameEngine.addEnemy(speed);
+    }
 
     this.gameEngine.addEnemy(new teleporter(this.gameEngine, AM.getAsset("./img/Teleporter.png") , 455, 302, 1));
 
@@ -220,8 +231,8 @@ levelManager.prototype.init = function(){
     AM.queueDownload("./img/ThreeTimesBox.png");
     AM.queueDownload("./img/GarbagePU.png");
     AM.queueDownload("./img/Teleporter.png");
-    AM.queueDownload("./img/CottonCandy");
-   // Am.queueDownload("");
+    AM.queueDownload("./img/CottonCandy.png");
+    AM.queueDownload("./img/BumpStock.png");
 
 
 AM.downloadAll(function () {
