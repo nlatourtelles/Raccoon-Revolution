@@ -16,25 +16,28 @@ levelManager.prototype.next = function(){
 }
 levelManager.prototype.nextLevel = function(){
     if(this.level > 0 ){
+        if(this.level == 2 || this.level == 4 || this.level == 6 || this.level == 8 ||this.level == 10){
+            this.levelTeleport();
+        }
         if(this.level == 1){
             this.level1();
         }
-        if(this.level == 2){
+        if(this.level == 3){
             this.level2();
         }
-        if(this.level == 3){
+        if(this.level == 5){
             this.level3();
         }
-        if(this.level == 4){
+        if(this.level == 7){
             this.level4();
         }
-        if(this.level == 5){
+        if(this.level == 9){
             this.level5();
         }
-        if(this.level == 6){
+        if(this.level == 11){
             this.level6();
         }
-        if(this.level == 7){
+        if(this.level == 12){
             this.gameEngine.removeAll();
             this.menu();
             this.level = -1;
@@ -92,7 +95,6 @@ levelManager.prototype.level1 = function(){
         AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
     this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
     this.gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
-    //this.gameEngine.addEnvironment(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
 }
 
 levelManager.prototype.level2 = function(){
@@ -149,6 +151,16 @@ levelManager.prototype.level6 = function(){
 
 }
 
+levelManager.prototype.levelTeleport = function(){
+    this.gameEngine.addEnemy(new PowerUp(gameEngine, AM.getAsset("./img/GarbagePU.png"), 706, 100, 2, 1, 0, 1));
+    this.gameEngine.addEnemy(new Ammo(gameEngine, AM.getAsset("./img/ThreeTimesBox.png") , 100, 100,"./img/Bullet_Up.png",
+    "./img/Bullet_Down.png", "./img/Bullet_Left.png", "./img/Bullet_Right.png", "./img/BulletNW.png", 
+    "./img/BulletSW.png", "./img/BulletSE.png", "./img/BulletNE.png", .65, "triple"));
+    this.gameEngine.addEnemy(new teleporter(this.gameEngine, AM.getAsset("./img/Teleporter.png") , 455, 302, 1));
+
+}
+
+
 levelManager.prototype.init = function(){
     var that = this;
     AM.queueDownload("./img/floor.png");
@@ -184,6 +196,10 @@ levelManager.prototype.init = function(){
     AM.queueDownload("./img/BulletNW.png");
     AM.queueDownload("./img/BulletSE.png");
     AM.queueDownload("./img/BulletSW.png");
+    AM.queueDownload("./img/ThreeTimesBox.png");
+    AM.queueDownload("./img/GarbagePU.png");
+    AM.queueDownload("./img/Teleporter.png");
+
 
 
 AM.downloadAll(function () {
