@@ -9,8 +9,12 @@ window.requestAnimFrame = (function () {
             };
 })();
 
-function GameEngine() {
+function GameEngine(levelManager) {
+    this.levelManager = levelManager;
     this.entities = [];
+    this.enemies = [];
+    this.enemyProjectiles = [];
+    this.playerBullet = [];
     this.ctx = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
@@ -18,6 +22,8 @@ function GameEngine() {
     this.clickedTest =null;
     this.started = null;
     this.score =0;
+    this.background = [];
+    this.environment = [];
 }
 
 GameEngine.prototype.setPlayer = function(player) {
@@ -35,7 +41,7 @@ GameEngine.prototype.init = function (ctx) {
     this.clickedTest = true;
     this.started = false;
     this.ctx.font = "30px Comic Sans MS";
-    this.ctx.fillStyle = "green";
+    this.ctx.fillStyle = "blue";
 
     this.keyPress["up"] = false;
     this.keyPress["down"] = false;
@@ -56,6 +62,29 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.ctx.canvas);
     })();
+}
+
+GameEngine.prototype.removeAll = function(){
+    for(var i = 0; i < this.entities.length; i++){
+        this.entities[i].removeFromWorld = true;
+    }
+    this.player.removeFromWorld = true;
+
+    for(var i = 0; i < this.enemies.length; i++){
+        this.enemies[i].removeFromWorld = true;
+    }
+}
+
+GameEngine.prototype.removeEnemies = function(){
+    for(var i = 0; i < this.enemies.length; i++){
+        this.enemies[i].removeFromWorld = true;
+    }
+}
+
+GameEngine.prototype.removeBG = function(){
+    for(var i = 0; i < this.background.length; i++){
+        this.background[i].removeFromWorld = true;
+    }
 }
 
 GameEngine.prototype.startInput = function () {
@@ -134,8 +163,8 @@ GameEngine.prototype.startInput = function () {
 
     this.ctx.canvas.addEventListener("click", function(){
         that.clickedTest = false; 
-        that.started = true;  
-
+        that.started = true;
+        that.levelManager.level ++;  
     });
 
     console.log('Input started');
@@ -146,27 +175,136 @@ GameEngine.prototype.addEntity = function (entity) {
     this.entities.push(entity);
 }
 
+GameEngine.prototype.addEnvironment = function (entity) {
+    console.log('added entity');
+    this.environment.push(entity);
+}
+
+GameEngine.prototype.addBackground = function (entity) {
+    console.log('added background');
+    this.background.push(entity);
+}
+
+GameEngine.prototype.addPlayerBullet = function (entity) {
+    console.log('added entity');
+    this.playerBullet.push(entity);
+}
+
+GameEngine.prototype.addEnemyProj= function (entity) {
+    console.log('added laser');
+    this.enemyProjectiles.push(entity);
+}
+
+GameEngine.prototype.addEnemy= function (entity) {
+    console.log('added entity');
+    this.enemies.push(entity);
+}
+
 GameEngine.prototype.draw = function () {
     this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
     this.ctx.save();
+    for(var i = 0; i < this.background.length; i++) {
+        this.background[i].draw(this.ctx);
+    }
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
+    }
+    for(var i = 0; i < this.enemyProjectiles.length; i++) {
+        this.enemyProjectiles[i].draw(this.ctx);
+    }
+    for(var i = 0; i < this.enemies.length; i++) {
+        this.enemies[i].draw(this.ctx);
+    }
+    for(var i = 0; i < this.playerBullet.length; i++) {
+        this.playerBullet[i].draw(this.ctx);
+    }
+    for(var i = 0; i < this.environment.length; i++) {
+        this.environment[i].draw(this.ctx);
     }
     this.ctx.restore();
 }
 
 GameEngine.prototype.update = function () {
     var entitiesCount = this.entities.length;
-
     for (var i = 0; i < entitiesCount; i++) {
         var entity = this.entities[i];
+        if (!entity.removeFromWorld) {
+            entity.update();
+        }
+    }
+    for (var i = this.entities.length - 1; i >= 0; --i) {
+        if (this.entities[i].removeFromWorld) {
+            this.entities.splice(i, 1);
+        }
+    }
 
-        entity.update();
+    //Update for enemy projectile list
+    var entitiesCount = this.enemyProjectiles.length;
+    for (var i = 0; i < entitiesCount; i++) {
+        var entity = this.enemyProjectiles[i];
+        
+
+        if (!entity.removeFromWorld) {
+            entity.update();
+        }
+    }
+    for (var i = this.enemyProjectiles.length - 1; i >= 0; --i) {
+        if (this.enemyProjectiles[i].removeFromWorld) {
+            this.enemyProjectiles.splice(i, 1);
+        }
+    }
+
+    //update for player bullet list
+    var entitiesCount = this.playerBullet.length;
+    for (var i = 0; i < entitiesCount; i++) {
+        var entity = this.playerBullet[i];
+        
+
+        if (!entity.removeFromWorld) {
+            entity.update();
+        }
+    }
+    for (var i = this.playerBullet.length - 1; i >= 0; --i) {
+        if (this.playerBullet[i].removeFromWorld) {
+            this.playerBullet.splice(i, 1);
+        }
+    }
+
+    //update for enemies list
+    var entitiesCount = this.enemies.length;
+    for (var i = 0; i < entitiesCount; i++) {
+        var entity = this.enemies[i];
+        if (!entity.removeFromWorld) {
+            entity.update();
+        }
+    }
+    for (var i = this.enemies.length - 1; i >= 0; --i) {
+        if (this.enemies[i].removeFromWorld) {
+            this.enemies.splice(i, 1);
+        }
+    }
+
+    //update for environment list
+    var entitiesCount = this.environment.length;
+    for (var i = 0; i < entitiesCount; i++) {
+        var entity = this.environment[i];
+        if (!entity.removeFromWorld) {
+            entity.update();
+        }
+    }
+    for (var i = this.environment.length - 1; i >= 0; --i) {
+        if (this.environment[i].removeFromWorld) {
+            this.environment.splice(i, 1);
+        }
     }
 }
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
+    if(this.started == true && this.enemies.length == 0){
+        this.levelManager.nextLevel();
+    }
+    this.levelManager.update();
     this.update();
     this.draw();
 }
@@ -200,7 +338,7 @@ Entity.prototype.update = function () {
 Entity.prototype.draw = function (ctx) {
     if (this.game.showOutlines && this.radius) {
         this.game.ctx.beginPath();
-        this.game.ctx.strokeStyle = "green";
+        this.game.ctx.strokeStyle = "blue";
         this.game.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         this.game.ctx.stroke();
         this.game.ctx.closePath();
