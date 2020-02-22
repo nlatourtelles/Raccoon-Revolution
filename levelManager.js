@@ -92,7 +92,7 @@ levelManager.prototype.level1 = function(){
         AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
     this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
     this.gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
-    this.gameEngine.addEnvironment(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
+    //this.gameEngine.addEnvironment(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
 }
 
 levelManager.prototype.level2 = function(){
