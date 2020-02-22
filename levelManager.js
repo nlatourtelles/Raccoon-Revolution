@@ -26,12 +26,17 @@ levelManager.prototype.nextLevel = function(){
             this.level2();
         }
         if(this.level == 5){
+            this.gameEngine.removeBG();
+            bg = new Background(gameEngine, AM.getAsset("./img/Road.png"));
+            gameEngine.addBackground(bg);
             this.level3();
         }
         if(this.level == 7){
             this.level4();
         }
         if(this.level == 9){
+            this.gameEngine.removeBG();
+            bg = new Background(gameEngine, AM.getAsset("./img/lab.png"));
             this.level5();
         }
         if(this.level == 11){
@@ -39,6 +44,8 @@ levelManager.prototype.nextLevel = function(){
         }
         if(this.level == 12){
             this.gameEngine.removeAll();
+            this.gameEngine.removeBG();
+            bg = new Background(gameEngine, AM.getAsset("./img/FloorOneBackgroundCrop.png"));
             this.menu();
             this.level = -1;
             this.gameEngine.started = false;
@@ -164,6 +171,8 @@ levelManager.prototype.levelTeleport = function(){
 levelManager.prototype.init = function(){
     var that = this;
     AM.queueDownload("./img/floor.png");
+    AM.queueDownload("./img/Road.png");
+    AM.queueDownload("./img/lab.png");
     AM.queueDownload("./img/RaccoonWalk_Up.png");
     AM.queueDownload("./img/RaccoonWalk_Down.png");
     AM.queueDownload("./img/RaccoonWalk_Left.png");

@@ -81,6 +81,12 @@ GameEngine.prototype.removeEnemies = function(){
     }
 }
 
+GameEngine.prototype.removeBG = function(){
+    for(var i = 0; i < this.background.length; i++){
+        this.background[i].removeFromWorld = true;
+    }
+}
+
 GameEngine.prototype.startInput = function () {
     console.log('Starting input');
     var that = this;
