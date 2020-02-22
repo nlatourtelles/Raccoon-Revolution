@@ -87,65 +87,65 @@ levelManager.prototype.level1 = function(){
     gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
    
     this.gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
-        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 50, 450));
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 50, 450, 0));
     this.gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
-        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
-    this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200, 1));
+    this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500, 2));
     this.gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
     //this.gameEngine.addEnvironment(new Rock(gameEngine, AM.getAsset("./img/Rock_Two.png"), 500, 550));
 }
 
 levelManager.prototype.level2 = function(){
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "up", 410, 480));
+        AM.getAsset("./img/Turret_Right.png"), "up", 410, 480, 0));
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "down", 410, 10));
+        AM.getAsset("./img/Turret_Right.png"), "down", 410, 10, 1));
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "left", 770, 310));
+        AM.getAsset("./img/Turret_Right.png"), "left", 770, 310, 2));
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "right", 15, 310));
+        AM.getAsset("./img/Turret_Right.png"), "right", 15, 310, 3));
 }
 
 
 
 levelManager.prototype.level3 = function(){
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "up", 410, 480));
+        AM.getAsset("./img/Turret_Right.png"), "up", 410, 480, 0));
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "down", 410, 10));
+        AM.getAsset("./img/Turret_Right.png"), "down", 410, 10, 1));
     this.gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
-        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),50, 450));
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),50, 450, 2));
 }
 
 levelManager.prototype.level4 = function(){
     this.gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
-        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),50, 450));
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),50, 450), 0);
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "left", 770, 310));
+        AM.getAsset("./img/Turret_Right.png"), "left", 770, 310), 1);
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "right", 15, 310));
+        AM.getAsset("./img/Turret_Right.png"), "right", 15, 310), 2);
 }
 
 levelManager.prototype.level5 = function(){
     this.gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
-        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right",50, 450));
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right",50, 450), 0);
     this.gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
-        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200), 1);
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "left",  770, 310));
+        AM.getAsset("./img/Turret_Right.png"), "left",  770, 310), 2);
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "right",15, 310));
+        AM.getAsset("./img/Turret_Right.png"), "right",15, 310), 3);
 }
 
 levelManager.prototype.level6 = function(){
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "up", 410, 480));
+        AM.getAsset("./img/Turret_Right.png"), "up", 410, 480), 0);
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "down", 410, 10));
+        AM.getAsset("./img/Turret_Right.png"), "down", 410, 10), 1);
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "left", 770, 310));
+        AM.getAsset("./img/Turret_Right.png"), "left", 770, 310), 2);
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
-        AM.getAsset("./img/Turret_Right.png"), "right", 15, 310));
+        AM.getAsset("./img/Turret_Right.png"), "right", 15, 310), 3);
 
 }
 
