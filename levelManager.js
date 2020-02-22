@@ -16,7 +16,7 @@ levelManager.prototype.next = function(){
 }
 levelManager.prototype.nextLevel = function(){
     if(this.level > 0 ){
-        if(this.level == 2 || this.level == 4 || this.level == 6 || this.level == 8 ||this.level == 10){
+        if(this.level == 2 || this.level == 4 || this.level == 6 || this.level == 8 ||this.level == 10 || this.level == 12){
        
             for(i = 0; i < this.gameEngine.environment.length; i++) {
                 this.gameEngine.environment[i].removeFromWorld = true;
@@ -46,7 +46,10 @@ levelManager.prototype.nextLevel = function(){
         if(this.level == 11){
             this.level6();
         }
-        if(this.level == 12){
+        if(this.level == 13) {
+            this.level7();
+        }
+        if(this.level == 14){
             this.gameEngine.removeAll();
             this.gameEngine.removeBG();
             bg = new Background(gameEngine, AM.getAsset("./img/FloorOneBackgroundCrop.png"));
@@ -105,6 +108,7 @@ levelManager.prototype.level1 = function(){
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 50, 450));
     this.gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
         AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
+    
     this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
     this.gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
 }
@@ -161,6 +165,10 @@ levelManager.prototype.level6 = function(){
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
         AM.getAsset("./img/Turret_Right.png"), "right", 15, 310));
 
+} 
+
+levelManager.prototype.level7 = function() {
+    this.gameEngine.addEnemy(new FinalBoss(gameEngine, AM.getAsset("./img/FinalBoss.png"), 350, 25));
 }
 
 levelManager.prototype.levelTeleport = function(){
@@ -233,6 +241,8 @@ levelManager.prototype.init = function(){
     AM.queueDownload("./img/Teleporter.png");
     AM.queueDownload("./img/CottonCandy.png");
     AM.queueDownload("./img/BumpStock.png");
+    AM.queueDownload("./img/FinalBoss.png");
+    AM.queueDownload("./img/LaserCirc.png");
 
 
 AM.downloadAll(function () {
