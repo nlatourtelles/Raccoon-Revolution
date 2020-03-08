@@ -584,16 +584,7 @@ Raccoon.prototype.update = function () {
 
                 this.invincible = true;
         }
-        for( i = 0; i < this.game.boss.length; i++) {
-            enemy = this.game.boss[i];
-            if(this.hitBox.x < enemy.hitBox.x + enemy.hitBox.width &&
-                this.hitBox.x + this.hitBox.width > enemy.hitBox.x && 
-                this.hitBox.y < enemy.y + enemy.hitBox.height &&
-                this.hitBox.height + this.hitBox.y > enemy.hitBox.y) {
-                    
-                    enemy.collidedWithPlayer = true;
-            }
-        }
+
     }
 
 }
@@ -1448,14 +1439,15 @@ function ForestBoss(game, walkUp, walkDown, walkLeft, walkRight, xLoc, yLoc) {
     this.y = yLoc;
     this.hp = 50;
     this.lastHp = 50;
-    this.speed = 50;
+    this.speed = 90;
     this.removeFromWorld = false;
     this.lastMoveChange = 0;
     this.direction = "right";
     this.collidedWithPlayer = false;
     this.hitBox = {x: this.x+30, y: this.y+34, width: 131, height: 136};
-    this.upDownHitbox = {x: this.x+25, y: this.y+16, width: 42, height: 72};
-    this.leftRightHitbox = {x: this.x+40, y: this.y+10, width: 20, height: 77};
+    this.upDownHitbox = {x: this.x+20, y: this.y+16, width: 90, height: 90};
+    this.leftHitbox = {x: this.x+70, y: this.y+10, width: 120, height: 100};
+    this.rightHitbox = {x: this.x-20, y: this.y+10, width: 130, height: 100};
 }
 
 ForestBoss.prototype.update = function() {
@@ -1502,8 +1494,33 @@ ForestBoss.prototype.update = function() {
                 this.hp -= 1;
         }
     }
+    randomChance = Math.floor(Math.random()* Math.floor(10000));
+    if(randomChance <= 30) {
+    
+        console.log("hit the random direction")
+        random = Math.floor(Math.random()* Math.floor(4));
+    
+            if(random === 1 && !botBound) {
 
+                this.direction = "down";
 
+                state = true;
+                console.log("direction is " + this.direction);
+
+            } else if(random === 2 && !leftBound) {
+                this.direction = "left";
+                state = true;
+
+            }else if(random === 0 && !topBound) {
+                this.direction = "up";
+    
+                state = true;
+            }else if(random === 4 && !rightBound) {
+                this.direction = "right";
+                state = true;
+            }
+        
+    }
 
     if(this.direction === "right" && !rightBound) {
         //move right        
@@ -1630,19 +1647,23 @@ ForestBoss.prototype.update = function() {
     }  
     if(this.direction === "up" || this.direction === "down") {
         this.hitBox = this.upDownHitbox;
-        this.hitBox.x = this.x +25;
+        this.hitBox.x = this.x +20;
         this.hitBox.y = this.y +16;
-    } else {
-        this.hitBox = this.leftRightHitbox;
-        this.hitBox.x = this.x+40;
-        this.hitBox.y = this.y+10;
+    } else if(this.direction === "left"){
+        this.hitBox = this.leftHitbox;
+        this.hitBox.x = this.x+5;
+        this.hitBox.y = this.y+15;
+    }else {
+        this.hitBox = this.rightHitbox;
+        this.hitBox.x = this.x;
+        this.hitBox.y = this.y+14;
     }
 
     if(this.hp <= 0) {
         this.removeFromWorld = true;
     }
 
-    if(this.lastHp - this.hp >= 25) {
+    if(this.lastHp - this.hp >= 20) {
         this.lastHp = this.hp;
         this.speed += 40;
     }

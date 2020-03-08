@@ -102,7 +102,7 @@ levelManager.prototype.update = function(){
 levelManager.prototype.level1 = function(){
     gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
-    // gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
+    gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
    
     // this.gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
     //     AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 50, 450));
@@ -110,7 +110,7 @@ levelManager.prototype.level1 = function(){
     //     AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
     
     // this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
-    this.gameEngine.addBoss(new ForestBoss(gameEngine, AM.getAsset("./img/TractorMiniBossUp.png"), AM.getAsset("./img/TractorMiniBossDown.png"), AM.getAsset("./img/TractorMiniBossLeft.png"), AM.getAsset("./img/TractorMiniBossRight.png"), 600, 200));
+    this.gameEngine.addEnemy(new ForestBoss(gameEngine, AM.getAsset("./img/TractorMiniBossUp.png"), AM.getAsset("./img/TractorMiniBossDown.png"), AM.getAsset("./img/TractorMiniBossLeft.png"), AM.getAsset("./img/TractorMiniBossRight.png"), 600, 200));
     this.gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
 }
 
@@ -171,7 +171,18 @@ levelManager.prototype.level6 = function(){
 levelManager.prototype.level7 = function() {
     this.gameEngine.addEnemy(new FinalBoss(gameEngine, AM.getAsset("./img/FinalBoss.png"), 350, 25));
 }
+levelManager.prototype.level8 = function(){
 
+   
+    // this.gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+    //     AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 50, 450));
+    // this.gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+    //     AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
+    
+    // this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
+    this.gameEngine.addEnemy(new ForestBoss(gameEngine, AM.getAsset("./img/TractorMiniBossUp.png"), AM.getAsset("./img/TractorMiniBossDown.png"), AM.getAsset("./img/TractorMiniBossLeft.png"), AM.getAsset("./img/TractorMiniBossRight.png"), 600, 200));
+    this.gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
+}
 levelManager.prototype.levelTeleport = function(){
     console.log("the level is " + this.level);
     if(this.level === 6) {

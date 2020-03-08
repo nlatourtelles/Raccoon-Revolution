@@ -24,7 +24,6 @@ function GameEngine(levelManager) {
     this.score = 0;
     this.background = [];
     this.environment = [];
-    this.boss = [];
 }
 
 GameEngine.prototype.setPlayer = function(player) {
@@ -200,11 +199,8 @@ GameEngine.prototype.addEnemy= function (entity) {
     console.log('added entity');
     this.enemies.push(entity);
 }
-GameEngine.prototype.addBoss= function (entity) {
-    console.log('added entity');
-    this.boss.push(entity);
-    this.enemies.push(entity);
-}
+  
+
 
 GameEngine.prototype.draw = function () {
     this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
@@ -227,6 +223,7 @@ GameEngine.prototype.draw = function () {
     for(var i = 0; i < this.environment.length; i++) {
         this.environment[i].draw(this.ctx);
     }
+
 
     this.ctx.restore();
 }
@@ -304,24 +301,13 @@ GameEngine.prototype.update = function () {
             this.environment.splice(i, 1);
         }
     }
-        //update for environment list
-        var entitiesCount = this.boss.length;
-        for (var i = 0; i < entitiesCount; i++) {
-            var entity = this.boss[i];
-            if (!entity.removeFromWorld) {
-                entity.update();
-            }
-        }
-        for (var i = this.boss.length - 1; i >= 0; --i) {
-            if (this.boss[i].removeFromWorld) {
-                this.boss.splice(i, 1);
-            }
-        }
+
 }
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
     if(this.started == true && this.enemies.length == 0){
+        console.log("hit the next level");
         this.levelManager.nextLevel();
     }
     this.levelManager.update();
