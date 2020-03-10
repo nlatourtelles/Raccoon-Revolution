@@ -24,6 +24,8 @@ function GameEngine(levelManager) {
     this.score =0;
     this.background = [];
     this.environment = [];
+    //Really ugly fix so the drones can see if the boss is alive
+    this.droneBossAlive = false;
 }
 
 GameEngine.prototype.setPlayer = function(player) {
