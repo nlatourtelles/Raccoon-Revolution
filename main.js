@@ -53,12 +53,19 @@ function Background(game, spritesheet) {
     this.bottomHitBox = {x: 0, y: 0, width: 0, height: 0};
     this.leftHitBox = {x: 0, y: 0, width: 0, height: 0};
     this.rightHitBox = {x: 0, y: 0, width: 0, height: 0};
+    this.finalBoss = false;
+    this.finalBossLeft = {x: 20, y: 150, width: 380, height: 64};
+    this.finalBossRight = {x: 490, y: 150, width: 380, height: 64};
+
 };
 
 Background.prototype.draw = function () {
     this.ctx.drawImage(this.spritesheet,this.x, this.y);
     // this.ctx.beginPath();
-    // this.ctx.rect(this.topHitBox.x, this.topHitBox.y, this.topHitBox.width, this.topHitBox.height);
+    // this.ctx.rect(this.finalBossLeft.x, this.finalBossLeft.y, this.finalBossLeft.width, this.finalBossLeft.height);
+    // this.ctx.stroke();
+    // this.ctx.beginPath();
+    // this.ctx.rect(this.finalBossRight.x, this.finalBossRight.y, this.finalBossRight.width, this.finalBossRight.height);
     // this.ctx.stroke();
     // this.ctx.beginPath();
     // this.ctx.rect(this.bottomHitBox.x, this.bottomHitBox.y, this.bottomHitBox.width, this.bottomHitBox.height);
@@ -199,6 +206,22 @@ Raccoon.prototype.update = function () {
         this.hitBox.y < bg.rightHitBox.y + bg.rightHitBox.height &&
         this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
             rightBound = true; 
+    }
+
+    if(bg.finalBoss) {
+        if(this.hitBox.x < bg.finalBossLeft.x + bg.finalBossLeft.width &&
+            this.hitBox.x + this.hitBox.width > bg.finalBossLeft.x && 
+            this.hitBox.y < bg.finalBossLeft.y + bg.finalBossLeft.height &&
+            this.hitBox.height + this.hitBox.y > bg.finalBossLeft.y) {
+                topBound = true; 
+        }
+
+        if(this.hitBox.x < bg.finalBossRight.x + bg.finalBossRight.width &&
+            this.hitBox.x + this.hitBox.width > bg.finalBossRight.x && 
+            this.hitBox.y < bg.finalBossRight.y + bg.finalBossRight.height &&
+            this.hitBox.height + this.hitBox.y > bg.finalBossRight.y) {
+                topBound = true; 
+        }
     }
 
     if( this.game.keyPress["up"] ) {
@@ -715,6 +738,22 @@ Bullet.prototype.update = function() {
         this.hitBox.y < bg.rightHitBox.y + bg.rightHitBox.height &&
         this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
             this.removeFromWorld = true; 
+    }
+
+    if(bg.finalBoss) {
+        if(this.hitBox.x < bg.finalBossLeft.x + bg.finalBossLeft.width &&
+            this.hitBox.x + this.hitBox.width > bg.finalBossLeft.x && 
+            this.hitBox.y < bg.finalBossLeft.y + bg.finalBossLeft.height &&
+            this.hitBox.height + this.hitBox.y > bg.finalBossLeft.y) {
+                this.removeFromWorld = true; 
+        }
+
+        if(this.hitBox.x < bg.finalBossRight.x + bg.finalBossRight.width &&
+            this.hitBox.x + this.hitBox.width > bg.finalBossRight.x && 
+            this.hitBox.y < bg.finalBossRight.y + bg.finalBossRight.height &&
+            this.hitBox.height + this.hitBox.y > bg.finalBossRight.y) {
+                this.removeFromWorld = true; 
+        }
     }
 }
 
@@ -2156,25 +2195,25 @@ function Barrel(game, rockSprite, xLoc, yLoc) {
 }
 
 Barrel.prototype.update = function(){
-    for(i = 0; i < this.game.playerBullet.length; i++) {
-        bullet = this.game.playerBullet[i];
-        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
-            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
-            this.hitBox.y < bullet.y + bullet.hitBox.height &&
-            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
-                bullet.removeFromWorld = true;
+    // for(i = 0; i < this.game.playerBullet.length; i++) {
+    //     bullet = this.game.playerBullet[i];
+    //     if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+    //         this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+    //         this.hitBox.y < bullet.y + bullet.hitBox.height &&
+    //         this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+    //             bullet.removeFromWorld = true;
             
-        }
-    }
+    //     }
+    // }
 
 
 }
 
 Barrel.prototype.draw = function() {
     this.rockAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    this.ctx.beginPath();
-    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
-    this.ctx.stroke();
+    // this.ctx.beginPath();
+    // this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    // this.ctx.stroke();
 }
 
 function Health(game, healthSprite, xLoc, yLoc) {
