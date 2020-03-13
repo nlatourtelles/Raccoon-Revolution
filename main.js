@@ -720,9 +720,9 @@ Bullet.prototype.update = function() {
 
 Bullet.prototype.draw = function() {
     this.bullet.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    this.ctx.beginPath();
-    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
-    this.ctx.stroke();
+    // this.ctx.beginPath();
+    // this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    // this.ctx.stroke();
 }
 
 function MeleeRobot(game, walkUp, walkDown, walkLeft, walkRight,xloc,yloc) {
