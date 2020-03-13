@@ -88,6 +88,11 @@ GameEngine.prototype.removeBG = function(){
         this.background[i].removeFromWorld = true;
     }
 }
+GameEngine.prototype.removeEni = function(){
+    for(var i = 0; i < this.environment.length; i++){
+        this.environment[i].removeFromWorld = true;
+    }
+}
 
 GameEngine.prototype.startInput = function () {
     console.log('Starting input');
