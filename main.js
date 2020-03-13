@@ -1664,6 +1664,7 @@ FinalBoss.prototype.update = function() {
 
     if(this.hp <= 0) {
         this.removeFromWorld = true;
+        cs.pause();
     }
 
     if(this.lastHp - this.hp >= 10) {

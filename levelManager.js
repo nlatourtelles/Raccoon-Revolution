@@ -33,6 +33,7 @@ levelManager.prototype.nextLevel = function(){
             this.gameEngine.removeBG();
             bg = new Background(gameEngine, AM.getAsset("./img/Road.png"));
             gameEngine.addBackground(bg);
+
             this.level3();
         }
         if(this.level == 7){
@@ -100,6 +101,7 @@ levelManager.prototype.update = function(){
 
 
 levelManager.prototype.level1 = function(){
+    
     gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
     gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
@@ -113,6 +115,13 @@ levelManager.prototype.level1 = function(){
     
     this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
     // this.gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
+
+/*******************************************************************************************************************************************
+ *  This is forest music for the first level, put on very first zone
+ ******************************************************************************************************************************************/
+    cs = forest;
+    cs.pause();
+    cs.play();
 }
 
 levelManager.prototype.level2 = function(){
@@ -124,6 +133,7 @@ levelManager.prototype.level2 = function(){
         AM.getAsset("./img/Turret_Right.png"), "left", 770, 310));
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
         AM.getAsset("./img/Turret_Right.png"), "right", 15, 310));
+
 }
 
 
@@ -135,6 +145,13 @@ levelManager.prototype.level3 = function(){
         AM.getAsset("./img/Turret_Right.png"), "down", 410, 10));
     this.gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),50, 450));
+
+/*******************************************************************************************************************************************
+ *  This is city music for the 2nd zone
+ ******************************************************************************************************************************************/
+cs.pause();
+    cs = cityscape;
+    cs.play();
 }
 
 levelManager.prototype.level4 = function(){
@@ -155,6 +172,13 @@ levelManager.prototype.level5 = function(){
         AM.getAsset("./img/Turret_Right.png"), "left",  770, 310));
     this.gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
         AM.getAsset("./img/Turret_Right.png"), "right",15, 310));
+
+/*******************************************************************************************************************************************
+ *  This is lab music for the 3rd zone
+ ******************************************************************************************************************************************/
+        cs.pause();
+        cs = lab;
+        cs.play();
 }
 
 levelManager.prototype.level6 = function(){
@@ -171,6 +195,15 @@ levelManager.prototype.level6 = function(){
 
 levelManager.prototype.level7 = function() {
     this.gameEngine.addEnemy(new FinalBoss(gameEngine, AM.getAsset("./img/FinalBoss.png"), 350, 25));
+
+/*******************************************************************************************************************************************
+ *  This is ebil music for the boss fight, IN MAIN.j during boss fight must have cs.pause() when boss reaches zero
+ *  otherwise the music will loop over into the restarted game. if 'victory scene level' made then we must add a cs.pause() in there to
+ *  ensure no repeating
+ ******************************************************************************************************************************************/
+    cs.pause();
+    cs = ebil;
+    cs.play();
 }
 
 levelManager.prototype.levelTeleport = function(){

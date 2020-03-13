@@ -8,6 +8,37 @@
     <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./levelManager.js"></script>
     <script type="text/javascript" src="./main.js"></script>
+
+    <script>
+        //This is for the music of the game!
+        var forest, cityscape, lab, ebil, death, victory, mutebtn;
+        function initAudioPlayer(){
+            forest = new Audio("./sound/forest.mp3");
+            cityscape = new Audio("./sound/cityscape.mp3");
+            lab = new Audio("./sound/lab.mp3");
+            ebil = new Audio("./sound/ebil.mp3");
+            death = new Audio("./sound/death.mp3");
+            victory = new Audio("./sound/victory.mp3");
+
+            forest.loop = true;
+            cityscape.loop = true;
+            lab.loop = true;
+            ebil.loop = true;
+            death.loop = true;
+            victory.loop = true;
+
+            forest.volume = .5;
+            cityscape.volume = .8;
+            lab.volume = 1;
+            ebil.volume = .5;
+            death.volume = .5;
+            victory.volume = .5;
+
+            this.currentsong;
+            var cs = this.currentsong;
+        }
+        window.addEventListener("load", initAudioPlayer);
+        </script>
 </head>
 <body>
     <canvas id="gameWorld" tabindex="1" width="910" height="660" style="border: 1px solid brown; background: black"></canvas>
