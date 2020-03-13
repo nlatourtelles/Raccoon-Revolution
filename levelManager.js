@@ -104,14 +104,14 @@ levelManager.prototype.level1 = function(){
         AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
     gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
 
-    // gameEngine.addEnemy(new DroneBoss(gameEngine, AM.getAsset("./img/DroneBoss.png"), 100, 100));
+     gameEngine.addEnemy(new DroneBoss(gameEngine, AM.getAsset("./img/DroneBoss.png"), 100, 100));
    
     this.gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 50, 450));
     this.gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
         AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
-    
-    this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
+    //this.gameEngine.addEnemy(new ForestBoss(gameEngine, AM.getAsset("./img/TractorMiniBossUp.png"), AM.getAsset("./img/TractorMiniBossDown.png"), AM.getAsset("./img/TractorMiniBossLeft.png"), AM.getAsset("./img/TractorMiniBossRight.png"), 600, 200));
+    //this.gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
     // this.gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
 }
 
@@ -246,7 +246,10 @@ levelManager.prototype.init = function(){
     AM.queueDownload("./img/FinalBoss.png");
     AM.queueDownload("./img/LaserCirc.png");
     AM.queueDownload("./img/DroneBoss.png");
-
+    AM.queueDownload("./img/TractorMiniBossUp.png");
+    AM.queueDownload("./img/TractorMiniBossDown.png");
+    AM.queueDownload("./img/TractorMiniBossLeft.png");
+    AM.queueDownload("./img/TractorMiniBossRight.png");
 
 AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
