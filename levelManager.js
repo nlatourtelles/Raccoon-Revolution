@@ -111,7 +111,9 @@ levelManager.prototype.update = function(){
         this.gameEngine.started = false;
         this.gameEngine.clickedTest = true;
         this.gameEngine.player = null;
-
+        cs = forest;
+        cs.pause();
+        cs.play();
     }
     if(this.bgHasChanged === true) {
         if(this.bgSound === 1) {
@@ -225,9 +227,9 @@ levelManager.prototype.level6 = function(){
 } 
 
 levelManager.prototype.level7 = function() {
-    gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
-    AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
-    gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
+    // gameEngine.setPlayer(new Raccoon(gameEngine, AM.getAsset("./img/RaccoonWalk_Up.png"), AM.getAsset("./img/RaccoonWalk_Down.png"), 
+    // AM.getAsset("./img/RaccoonWalk_Left.png"), AM.getAsset("./img/RaccoonWalk_Right.png")));
+    // gameEngine.addEntity(new Health(gameEngine, AM.getAsset("./img/trashcan.png"), 10, 10));
     this.gameEngine.addEnemy(new FinalBoss(gameEngine, AM.getAsset("./img/FinalBoss.png"), 350, 25));
     this.gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 20, 150));
     this.gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 55, 150));

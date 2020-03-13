@@ -75,6 +75,17 @@ GameEngine.prototype.removeAll = function(){
     for(var i = 0; i < this.enemies.length; i++){
         this.enemies[i].removeFromWorld = true;
     }
+    
+    for(var i = 0; i < this.environment.length; i++){
+        this.environment[i].removeFromWorld = true;
+    }
+    for(var i = 0; i < this.enemyProjectiles.length; i++){
+        this.enemyProjectiles[i].removeFromWorld = true;
+    }
+    for(var i = 0; i < this.playerBullet.length; i++){
+        this.playerBullet[i].removeFromWorld = true;
+    }
+
 }
 
 GameEngine.prototype.removeEnemies = function(){
