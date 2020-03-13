@@ -23,6 +23,9 @@ function GameEngine(levelManager) {
     this.started = null;
     this.score =0;
     this.background = [];
+    this.environment = [];
+    //Really ugly fix so the drones can see if the boss is alive
+    this.droneBossAlive = false;
 }
 
 GameEngine.prototype.setPlayer = function(player) {
@@ -36,7 +39,7 @@ GameEngine.prototype.init = function (ctx) {
     this.timer = new Timer();
     this.startInput();
     this.keyPress = new Array(8);
-
+    this.pressedE = 0;
     this.clickedTest = true;
     this.started = false;
     this.ctx.font = "30px Comic Sans MS";
@@ -72,8 +75,23 @@ GameEngine.prototype.removeAll = function(){
     for(var i = 0; i < this.enemies.length; i++){
         this.enemies[i].removeFromWorld = true;
     }
-    //this.enemyProjectiles = [];
-    //this.playerBullet = [];
+}
+
+GameEngine.prototype.removeEnemies = function(){
+    for(var i = 0; i < this.enemies.length; i++){
+        this.enemies[i].removeFromWorld = true;
+    }
+}
+
+GameEngine.prototype.removeBG = function(){
+    for(var i = 0; i < this.background.length; i++){
+        this.background[i].removeFromWorld = true;
+    }
+}
+GameEngine.prototype.removeEni = function(){
+    for(var i = 0; i < this.environment.length; i++){
+        this.environment[i].removeFromWorld = true;
+    }
 }
 
 GameEngine.prototype.startInput = function () {
@@ -113,6 +131,10 @@ GameEngine.prototype.startInput = function () {
             that.keyPress["shootRight"] = true;
             e.preventDefault();
         }
+        if(e.code == "KeyE"){
+            that.pressedE = 0;
+            e.preventDefault();
+        }
     });
 
     this.ctx.canvas.addEventListener("keyup" , function(e) {
@@ -148,6 +170,10 @@ GameEngine.prototype.startInput = function () {
             that.keyPress["shootRight"] = false;
             e.preventDefault();
         }
+        if(e.code == "KeyE"){
+            that.pressedE = 1;
+            e.preventDefault();
+        }
     });
 
     this.ctx.canvas.addEventListener("click", function(){
@@ -162,6 +188,11 @@ GameEngine.prototype.startInput = function () {
 GameEngine.prototype.addEntity = function (entity) {
     console.log('added entity');
     this.entities.push(entity);
+}
+
+GameEngine.prototype.addEnvironment = function (entity) {
+    console.log('added entity');
+    this.environment.push(entity);
 }
 
 GameEngine.prototype.addBackground = function (entity) {
@@ -201,6 +232,9 @@ GameEngine.prototype.draw = function () {
     }
     for(var i = 0; i < this.playerBullet.length; i++) {
         this.playerBullet[i].draw(this.ctx);
+    }
+    for(var i = 0; i < this.environment.length; i++) {
+        this.environment[i].draw(this.ctx);
     }
     this.ctx.restore();
 }
@@ -262,6 +296,20 @@ GameEngine.prototype.update = function () {
     for (var i = this.enemies.length - 1; i >= 0; --i) {
         if (this.enemies[i].removeFromWorld) {
             this.enemies.splice(i, 1);
+        }
+    }
+
+    //update for environment list
+    var entitiesCount = this.environment.length;
+    for (var i = 0; i < entitiesCount; i++) {
+        var entity = this.environment[i];
+        if (!entity.removeFromWorld) {
+            entity.update();
+        }
+    }
+    for (var i = this.environment.length - 1; i >= 0; --i) {
+        if (this.environment[i].removeFromWorld) {
+            this.environment.splice(i, 1);
         }
     }
 }
