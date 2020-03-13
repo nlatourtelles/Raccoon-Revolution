@@ -1807,7 +1807,7 @@ function ForestBoss(game, walkUp, walkDown, walkLeft, walkRight, xLoc, yLoc) {
     this.game = game;
     this.x = xLoc;
     this.y = yLoc;
-    this.hp = 50;
+    this.hp = 35;
     this.lastHp = 65;
     this.speed = 130;
     this.removeFromWorld = false;

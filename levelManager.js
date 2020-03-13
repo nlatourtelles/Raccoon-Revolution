@@ -12,7 +12,7 @@ function levelManager(){
     
 }
 levelManager.prototype.next = function(){
-    this.level++;
+    //this.level++;
 }
 levelManager.prototype.nextLevel = function(){
     if(this.level > 0 ){
@@ -28,8 +28,18 @@ levelManager.prototype.nextLevel = function(){
             this.bgHasChanged = true;
             this.bgSound = 1;
         }
-        else if(this.level == 13){
+        else if(this.level == 7){
             bosslevel1();
+            this.bgHasChanged = true;
+            this.bgSound = 4;
+        }
+        else if(this.level == 15){
+            bosslevel2();
+            this.bgHasChanged = true;
+            this.bgSound = 4;
+        }        
+        else if(this.level == 23){
+            bosslevel3();
             this.bgHasChanged = true;
             this.bgSound = 4;
         }
@@ -38,27 +48,31 @@ levelManager.prototype.nextLevel = function(){
             levelList[index]();
             levelList.splice(index, 1);
         }
-        if(this.level == 5){
+        if(this.level == 9){
             this.gameEngine.removeBG();
             bg = new Background(gameEngine, AM.getAsset("./img/Road.png"));
             gameEngine.addBackground(bg);
             this.bgHasChanged = true;
             this.bgSound = 2;
         }
-        if(this.level == 7){
+        if(this.level == 17){
             this.gameEngine.removeBG();
             bg = new Background(gameEngine, AM.getAsset("./img/lab.png"));
+            gameEngine.addBackground(bg);
             this.bgHasChanged = true;
             this.bgSound = 3;
         }
-        if(this.level == 14){
+        if(this.level == 24){
             this.gameEngine.removeAll();
             this.gameEngine.removeBG();
             bg = new Background(gameEngine, AM.getAsset("./img/FloorOneBackgroundCrop.png"));
             this.menu();
             this.level = -1;
+            this.bgHasChanged = true;
+            this.bgSound = 1;
             this.gameEngine.started = false;
             this.gameEngine.clickedTest = true;
+            levelList = FulllevelList;
         }
         this.level ++;
     }
@@ -95,9 +109,12 @@ levelManager.prototype.update = function(){
         this.gameEngine.removeAll();
         this.menu();
         this.level = 0;
+        levelList = FulllevelList;
         this.gameEngine.started = false;
         this.gameEngine.clickedTest = true;
         this.gameEngine.player = null;
+        this.bgHasChanged = true;
+        this.bgSound = 1;
 
     }
     if(this.bgHasChanged === true) {
@@ -140,8 +157,9 @@ levelManager.prototype.update = function(){
    // console.log("the level is " + this.level);
 }
 
-
-var levelList = [level2, level3, level4, level5, level6,level2, level3, level4, level5, level6];
+//level7, level8, level9, level10, level11,level12,level7, level8, level9, level10, level11,level12
+var FulllevelList = [level2, level3, level4, level5, level6, level7, level8, level9, level10, level11,level12,level13];
+var levelList = [level2, level3, level4, level5, level6, level7, level8, level9, level10, level11,level12,level13];
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
@@ -156,9 +174,8 @@ function level1(){
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 50, 200));
         gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
         AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"), 600, 200));
-    
-    //gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 100, 500));
-    //gameEngine.addEnvironment(new GroundFire(gameEngine, AM.getAsset("./img/GroundFireSpritesheet.png"), 700, 350));
+
+
 }
 
 function level2(){
@@ -215,10 +232,115 @@ function level6(){
 
 } 
 
-function bosslevel1() {
-    gameEngine.addEnemy(new FinalBoss(gameEngine, AM.getAsset("./img/FinalBoss.png"), 350, 25));
+function level7(){
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+        AM.getAsset("./img/Turret_Right.png"), "down", 15, 10));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+        AM.getAsset("./img/Turret_Right.png"), "down", 410, 10));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+        AM.getAsset("./img/Turret_Right.png"), "down", 770, 10));
+    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),50, 450));
+
 }
 
+
+function level8(){
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+        AM.getAsset("./img/Turret_Right.png"), "up", 15, 480));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+        AM.getAsset("./img/Turret_Right.png"), "up", 770, 480));
+    gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right",50, 450));
+    gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 600,200));
+
+}
+
+function level9(){
+    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),410, 480));
+    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),410, 15));
+    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),770, 310));
+    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),15, 310));
+}
+
+function level10(){
+    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),410, 480));
+    gameEngine.addEnemy(new MeleeRobot(gameEngine, AM.getAsset("./img/MeleeRobWalk_Up.png"), AM.getAsset("./img/MeleeRobWalk_Down.png"), 
+        AM.getAsset("./img/MeleeRobWalk_Left.png"), AM.getAsset("./img/MeleeRobWalk_Right.png"),410, 15));
+    gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right",770, 310));
+    gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 15, 310));
+}
+
+function level11(){
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"),410, 480));
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"),410, 15));
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"),450, 480));
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"),450, 15));
+    gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right",770, 310));
+    gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+        AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 15, 310));
+}
+
+function level12(){
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 410, 480));
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 410, 10));
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 770, 310));
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 15, 310));
+
+} 
+
+function level13(){
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 410, 480));
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 410, 10));
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 770, 310));
+    gameEngine.addEnemy(new Drone(gameEngine, AM.getAsset("./img/Drone.png"), 15, 310));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    AM.getAsset("./img/Turret_Right.png"), "down", 15, 10));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    AM.getAsset("./img/Turret_Right.png"), "left", 770, 30));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    AM.getAsset("./img/Turret_Right.png"), "right", 15, 500));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    AM.getAsset("./img/Turret_Right.png"), "up", 770, 500));
+
+} 
+
+function level14(){
+    gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+    AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "left", 770, 310));
+    gameEngine.addEnemy(new LaserRobot(gameEngine,AM.getAsset("./img/LaserRobWalk_Up.png"), AM.getAsset("./img/LaserRobWalk_Down.png"), 
+    AM.getAsset("./img/LaserRobWalk_Left.png"), AM.getAsset("./img/LaserRobWalk_Right.png"), "right", 15, 310));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    AM.getAsset("./img/Turret_Right.png"), "down", 15, 10));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    AM.getAsset("./img/Turret_Right.png"), "left", 770, 30));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    AM.getAsset("./img/Turret_Right.png"), "right", 15, 500));
+    gameEngine.addEnemy(new Turret(gameEngine, AM.getAsset("./img/Turret_Up.png"), AM.getAsset("./img/Turret_Down.png"), AM.getAsset("./img/Turret_Left.png"), 
+    AM.getAsset("./img/Turret_Right.png"), "up", 770, 500));
+
+} 
+
+function bosslevel1() {
+    gameEngine.addEnemy(new ForestBoss(gameEngine, AM.getAsset("./img/TractorMiniBossUp.png"), AM.getAsset("./img/TractorMiniBossDown.png"), AM.getAsset("./img/TractorMiniBossLeft.png"), AM.getAsset("./img/TractorMiniBossRight.png"), 600, 200));
+}
+
+function bosslevel2() {
+    gameEngine.addEnemy(new DroneBoss(gameEngine, AM.getAsset("./img/DroneBoss.png"), 100, 100));
+}
+
+function bosslevel3() {
+    gameEngine.addEnemy(new FinalBoss(gameEngine, AM.getAsset("./img/FinalBoss.png"), 350, 25));
+}
 
 levelManager.prototype.levelTeleport = function(){
     console.log("the level is " + this.level);
