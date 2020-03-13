@@ -21,9 +21,11 @@ function GameEngine(levelManager) {
     this.player = null;
     this.clickedTest =null;
     this.started = null;
-    this.score = 0;
+    this.score =0;
     this.background = [];
     this.environment = [];
+    //Really ugly fix so the drones can see if the boss is alive
+    this.droneBossAlive = false;
 }
 
 GameEngine.prototype.setPlayer = function(player) {
@@ -37,7 +39,7 @@ GameEngine.prototype.init = function (ctx) {
     this.timer = new Timer();
     this.startInput();
     this.keyPress = new Array(8);
-
+    this.pressedE = 0;
     this.clickedTest = true;
     this.started = false;
     this.ctx.font = "30px Comic Sans MS";
@@ -86,6 +88,11 @@ GameEngine.prototype.removeBG = function(){
         this.background[i].removeFromWorld = true;
     }
 }
+GameEngine.prototype.removeEni = function(){
+    for(var i = 0; i < this.environment.length; i++){
+        this.environment[i].removeFromWorld = true;
+    }
+}
 
 GameEngine.prototype.startInput = function () {
     console.log('Starting input');
@@ -124,6 +131,10 @@ GameEngine.prototype.startInput = function () {
             that.keyPress["shootRight"] = true;
             e.preventDefault();
         }
+        if(e.code == "KeyE"){
+            that.pressedE = 0;
+            e.preventDefault();
+        }
     });
 
     this.ctx.canvas.addEventListener("keyup" , function(e) {
@@ -157,6 +168,10 @@ GameEngine.prototype.startInput = function () {
         }
         if(e.code === "ArrowRight") {
             that.keyPress["shootRight"] = false;
+            e.preventDefault();
+        }
+        if(e.code == "KeyE"){
+            that.pressedE = 1;
             e.preventDefault();
         }
     });
@@ -199,8 +214,6 @@ GameEngine.prototype.addEnemy= function (entity) {
     console.log('added entity');
     this.enemies.push(entity);
 }
-  
-
 
 GameEngine.prototype.draw = function () {
     this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
@@ -223,8 +236,6 @@ GameEngine.prototype.draw = function () {
     for(var i = 0; i < this.environment.length; i++) {
         this.environment[i].draw(this.ctx);
     }
-
-
     this.ctx.restore();
 }
 
@@ -301,13 +312,11 @@ GameEngine.prototype.update = function () {
             this.environment.splice(i, 1);
         }
     }
-
 }
 
 GameEngine.prototype.loop = function () {
     this.clockTick = this.timer.tick();
     if(this.started == true && this.enemies.length == 0){
-        console.log("hit the next level");
         this.levelManager.nextLevel();
     }
     this.levelManager.update();
