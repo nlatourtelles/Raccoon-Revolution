@@ -180,6 +180,7 @@ GameEngine.prototype.startInput = function () {
         that.clickedTest = false; 
         that.started = true;
         that.levelManager.level ++;  
+        
     });
 
     console.log('Input started');
