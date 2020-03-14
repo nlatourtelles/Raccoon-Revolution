@@ -340,6 +340,29 @@ function bosslevel2() {
 
 function bosslevel3() {
     gameEngine.addEnemy(new FinalBoss(gameEngine, AM.getAsset("./img/FinalBoss.png"), 350, 25));
+    gameEngine.addEnemy(new FinalBoss(gameEngine, AM.getAsset("./img/FinalBoss.png"), 350, 25));
+    gameEngine.background[0].finalBoss = true;
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 20, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 55, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 90, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 125, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 160, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 195, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 230, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 265, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 300, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 345, 150));
+    
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 480, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 525, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 560, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 595, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 635, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 670, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 705, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 740, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 775, 150));
+    gameEngine.addEnvironment(new Barrel(gameEngine, AM.getAsset("./img/ToxBarrel.png"), 815, 150));
 }
 
 levelManager.prototype.levelTeleport = function(){
