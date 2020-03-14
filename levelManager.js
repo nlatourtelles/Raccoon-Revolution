@@ -66,7 +66,7 @@ levelManager.prototype.nextLevel = function(){
             this.gameEngine.removeAll();
             this.gameEngine.removeBG();
             bg = new Background(gameEngine, AM.getAsset("./img/FloorOneBackgroundCrop.png"));
-            this.menu();
+            this.VictoryMenu();
             this.level = -1;
             this.bgHasChanged = true;
             this.bgSound = 1;
@@ -104,7 +104,60 @@ levelManager.prototype.menu = function(){
     gameEngine.addEntity(new startText(gameEngine));
     gameEngine.addEntity(new scoreText(gameEngine));
 }
+levelManager.prototype.VictoryMenu = function(){
+    bg = new Background(gameEngine, AM.getAsset("./img/FloorOneBackgroundCrop.png"));
+    bgHasChanged = false;
+    bgSound = 1;
+    gameEngine.addBackground(bg);
+    bg.topHitBox.x = 0;
+    bg.topHitBox.y = 0;
+    bg.topHitBox.width = 910;
+    bg.topHitBox.height = 41;
+    bg.bottomHitBox.x = 0;
+    bg.bottomHitBox.y = 604;
+    bg.bottomHitBox.width = 910;
+    bg.bottomHitBox.height = 56;
+    bg.leftHitBox.x = 0;
+    bg.leftHitBox.y = 0;
+    bg.leftHitBox.width = 40;
+    bg.leftHitBox.height = 660;
+    bg.rightHitBox.x = 870;
+    bg.rightHitBox.y = 0;
+    bg.rightHitBox.width = 40;
+    bg.rightHitBox.height = 660;
+    gameEngine.background[0].finalBoss = false;
 
+    gameEngine.addEntity(new VictoryText(gameEngine));
+    gameEngine.addEntity(new scoreText(gameEngine));
+}
+
+levelManager.prototype.DeathMenu = function(){
+    bg = new Background(gameEngine, AM.getAsset("./img/FloorOneBackgroundCrop.png"));
+    bgHasChanged = false;
+    bgSound = 1;
+    
+    gameEngine.addBackground(bg);
+    bg.topHitBox.x = 0;
+    bg.topHitBox.y = 0;
+    bg.topHitBox.width = 910;
+    bg.topHitBox.height = 41;
+    bg.bottomHitBox.x = 0;
+    bg.bottomHitBox.y = 604;
+    bg.bottomHitBox.width = 910;
+    bg.bottomHitBox.height = 56;
+    bg.leftHitBox.x = 0;
+    bg.leftHitBox.y = 0;
+    bg.leftHitBox.width = 40;
+    bg.leftHitBox.height = 660;
+    bg.rightHitBox.x = 870;
+    bg.rightHitBox.y = 0;
+    bg.rightHitBox.width = 40;
+    bg.rightHitBox.height = 660;
+    gameEngine.background[0].finalBoss = false;
+
+    gameEngine.addEntity(new DeathText(gameEngine));
+    gameEngine.addEntity(new scoreText(gameEngine));
+}
 levelManager.prototype.update = function(){
     if(this.gameEngine != null && this.gameEngine.player != null && this.gameEngine.player.hp < 1){
         cs = forest;
@@ -112,7 +165,8 @@ levelManager.prototype.update = function(){
         cs.play();
         this.gameEngine.removeAll();
     
-        this.menu();
+        this.DeathMenu();
+        cs.pause();
         this.level = 0;
         levelList = FulllevelList;
         this.gameEngine.started = false;

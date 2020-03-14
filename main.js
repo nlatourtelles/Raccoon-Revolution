@@ -2409,7 +2409,76 @@ startText.prototype.draw = function() {
         this.game.ctx.fillText("Controls: W, A, S, D to move    UP, DOWN, LEFT, RIGHT to shoot", this.x - 190 , this.y +300);
     }
 }
+function DeathText(game) {
+    this.game = game;
+    this.ctx = game.ctx;
+    this.time = Date.now();
+    this.x = this.ctx.canvas.clientWidth /2 -200;
+    this.y = this.ctx.canvas.clientHeight / 2 -100;
+}
 
+DeathText.prototype.update = function(){
+    if(this.game.clickedTest == true){
+        if( Date.now() - this.time > 500){
+            this.game.ctx.font = "30px Comic Sans MS";
+            this.game.ctx.fillStyle = "red";
+            if(Date.now() - this.time > 1000){
+                this.game.ctx.font = "30px Comic Sans MS";
+                this.game.ctx.fillStyle = "black";
+                this.time = Date.now();
+            }
+            
+        }
+
+    }
+    else{
+        return;
+    }
+}
+
+DeathText.prototype.draw = function() {
+    if(this.game.clickedTest == true){
+        this.game.ctx.fillText("YOU DIED CLICK HERE TO RESTART!", this.x, this.y);
+        this.game.ctx.font = "25px Comic Sans MS";
+        this.game.ctx.fillStyle = "black";
+  
+    }
+}
+function VictoryText(game) {
+    this.game = game;
+    this.ctx = game.ctx;
+    this.time = Date.now();
+    this.x = this.ctx.canvas.clientWidth /2 -200;
+    this.y = this.ctx.canvas.clientHeight / 2 -100;
+}
+
+VictoryText.prototype.update = function(){
+    if(this.game.clickedTest == true){
+        if( Date.now() - this.time > 500){
+            this.game.ctx.font = "30px Comic Sans MS";
+            this.game.ctx.fillStyle = "blue";
+            if(Date.now() - this.time > 1000){
+                this.game.ctx.font = "30px Comic Sans MS";
+                this.game.ctx.fillStyle = "green";
+                this.time = Date.now();
+            }
+            
+        }
+
+    }
+    else{
+        return;
+    }
+}
+
+VictoryText.prototype.draw = function() {
+    if(this.game.clickedTest == true){
+        this.game.ctx.fillText("YOU WIN CLICK HERE TO RESTART!", this.x, this.y);
+        this.game.ctx.font = "25px Comic Sans MS";
+        this.game.ctx.fillStyle = "blue";
+  
+    }
+}
 function scoreText(game) {
     this.game = game;
     this.ctx = game.ctx;
