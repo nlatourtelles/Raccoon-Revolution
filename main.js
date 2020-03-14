@@ -53,6 +53,9 @@ function Background(game, spritesheet) {
     this.bottomHitBox = {x: 0, y: 0, width: 0, height: 0};
     this.leftHitBox = {x: 0, y: 0, width: 0, height: 0};
     this.rightHitBox = {x: 0, y: 0, width: 0, height: 0};
+    this.finalBoss = false;
+    this.finalBossLeft = {x: 20, y: 150, width: 380, height: 64};
+    this.finalBossRight = {x: 490, y: 150, width: 380, height: 64};
 };
 
 Background.prototype.draw = function () {
@@ -199,6 +202,22 @@ Raccoon.prototype.update = function () {
         this.hitBox.y < bg.rightHitBox.y + bg.rightHitBox.height &&
         this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
             rightBound = true; 
+    }
+
+    if(bg.finalBoss) {
+        if(this.hitBox.x < bg.finalBossLeft.x + bg.finalBossLeft.width &&
+            this.hitBox.x + this.hitBox.width > bg.finalBossLeft.x && 
+            this.hitBox.y < bg.finalBossLeft.y + bg.finalBossLeft.height &&
+            this.hitBox.height + this.hitBox.y > bg.finalBossLeft.y) {
+                topBound = true; 
+        }
+
+        if(this.hitBox.x < bg.finalBossRight.x + bg.finalBossRight.width &&
+            this.hitBox.x + this.hitBox.width > bg.finalBossRight.x && 
+            this.hitBox.y < bg.finalBossRight.y + bg.finalBossRight.height &&
+            this.hitBox.height + this.hitBox.y > bg.finalBossRight.y) {
+                topBound = true; 
+        }
     }
 
     if( this.game.keyPress["up"] ) {
@@ -589,7 +608,9 @@ Raccoon.prototype.update = function () {
                 this.invincible = true;
         }
     }
-
+    if(this.hp <= 0) {
+        cs.pause();
+    }
 }
 
 
@@ -715,6 +736,21 @@ Bullet.prototype.update = function() {
         this.hitBox.y < bg.rightHitBox.y + bg.rightHitBox.height &&
         this.hitBox.height + this.hitBox.y > bg.rightHitBox.y) {
             this.removeFromWorld = true; 
+    }
+    if(bg.finalBoss) {
+        if(this.hitBox.x < bg.finalBossLeft.x + bg.finalBossLeft.width &&
+            this.hitBox.x + this.hitBox.width > bg.finalBossLeft.x && 
+            this.hitBox.y < bg.finalBossLeft.y + bg.finalBossLeft.height &&
+            this.hitBox.height + this.hitBox.y > bg.finalBossLeft.y) {
+                this.removeFromWorld = true; 
+        }
+
+        if(this.hitBox.x < bg.finalBossRight.x + bg.finalBossRight.width &&
+            this.hitBox.x + this.hitBox.width > bg.finalBossRight.x && 
+            this.hitBox.y < bg.finalBossRight.y + bg.finalBossRight.height &&
+            this.hitBox.height + this.hitBox.y > bg.finalBossRight.y) {
+                this.removeFromWorld = true; 
+        }
     }
 }
 
@@ -936,6 +972,7 @@ MeleeRobot.prototype.update = function() {
  
     if(this.hp <= 0) {
         this.removeFromWorld = true;
+        this.game.score += 20;
     }
 
 }
@@ -1142,6 +1179,7 @@ LaserRobot.prototype.update = function() {
     this.canMove = true;
     if(this.hp <= 0) {
         this.removeFromWorld = true;
+        this.game.score += 30;
     }
 
 
@@ -1299,6 +1337,7 @@ Turret.prototype.update = function() {
 
     if(this.hp <= 0) {
         this.removeFromWorld = true;
+        this.game.score += 10;
     }
 }
 
@@ -1380,6 +1419,7 @@ Drone.prototype.update = function() {
 
     if(this.hp <= 0) {
         this.removeFromWorld = true;
+        this.game.score += 20;
     }
 
 }
@@ -1483,6 +1523,7 @@ DroneBoss.prototype.update = function() {
 
     if(this.hp <= 0) {
         this.removeFromWorld = true;
+        this.game.score += 150;
         this.game.droneBossAlive = false;
         for (var i = this.drones.length - 1; i >= 0; --i) {
             this.drones[i].released = true;
@@ -1728,7 +1769,9 @@ FinalBoss.prototype.update = function() {
     }
 
     if(this.hp <= 0) {
+        this.game.score += 200;
         this.removeFromWorld = true;
+        this.game.background[0].finalBoss = false;
         cs.pause();
     }
 
@@ -1801,7 +1844,7 @@ function ForestBoss(game, walkUp, walkDown, walkLeft, walkRight, xLoc, yLoc) {
     this.game = game;
     this.x = xLoc;
     this.y = yLoc;
-    this.hp = 50;
+    this.hp = 35;
     this.lastHp = 65;
     this.speed = 130;
     this.removeFromWorld = false;
@@ -2029,6 +2072,7 @@ ForestBoss.prototype.update = function() {
     }
 
     if(this.hp <= 0) {
+        this.score += 100;
         this.removeFromWorld = true;
     }
 
@@ -2156,25 +2200,15 @@ function Barrel(game, rockSprite, xLoc, yLoc) {
 }
 
 Barrel.prototype.update = function(){
-    for(i = 0; i < this.game.playerBullet.length; i++) {
-        bullet = this.game.playerBullet[i];
-        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
-            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
-            this.hitBox.y < bullet.y + bullet.hitBox.height &&
-            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
-                bullet.removeFromWorld = true;
-            
-        }
-    }
 
 
 }
 
 Barrel.prototype.draw = function() {
     this.rockAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-    this.ctx.beginPath();
-    this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
-    this.ctx.stroke();
+    // this.ctx.beginPath();
+    // this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    // this.ctx.stroke();
 }
 
 function Health(game, healthSprite, xLoc, yLoc) {
@@ -2262,7 +2296,6 @@ Ammo.prototype.update = function() {
         this.hitBox.y < this.game.player.hitBox.y + this.game.player.hitBox.height &&
         this.hitBox.height + this.hitBox.y > this.game.player.hitBox.y) {
    
-                this.game.player.hp += 1;
                 this.game.player.bulletUp.sprite = this.BulletUp;
                 this.game.player.bulletDown.sprite = this.BulletDown;
                 this.game.player.bulletLeft.sprite = this.BulletLeft;
@@ -2305,24 +2338,38 @@ function teleporter(game, powerUpSprite , theX, theY, scale){
     this.game = game;
     this.ctx = game.ctx;
     this.scale = scale;
+    this.oldHealth = this.game.player.hp;
     this.PowerUpAnimation = new Animation(powerUpSprite, 64, 64, 512, .5, 8, true, 1);
     this.hitBox = {x: theX, y: theY, width: 64, height: 64};
 }
 
 teleporter.prototype.update = function(){
+    if(this.game.player.hp > this.oldHealth){
+        this.oldHealth = this.game.player.hp;
+    }
+    this.game.player.hp = this.oldHealth;
     if(this.hitBox.x < this.game.player.hitBox.x + this.game.player.hitBox.width &&
         this.hitBox.x + this.hitBox.width > this.game.player.hitBox.x && 
         this.hitBox.y < this.game.player.hitBox.y + this.game.player.hitBox.height &&
         this.hitBox.height + this.hitBox.y > this.game.player.hitBox.y) { 
-            this.game.player.hp += 1;
-            this.game.removeEnemies();           
-            this.removeFromWorld = true;
-            console.log("HIT");
+            this.game.ctx.font = "30px Comic Sans MS";
+            this.game.ctx.fillStyle = "red";
+            this.game.ctx.fillText("Press E to advance", this.x, this.y);
+            if(this.game.pressedE == 1){
+                this.game.removeEnemies();           
+                this.removeFromWorld = true;
+                console.log("HIT");
+            }
+            this.game.pressedE = 0;
         }
-
 }
 
 teleporter.prototype.draw = function(){
+    if(this.hitBox.x < this.game.player.hitBox.x + this.game.player.hitBox.width &&
+        this.hitBox.x + this.hitBox.width > this.game.player.hitBox.x && 
+        this.hitBox.y < this.game.player.hitBox.y + this.game.player.hitBox.height &&
+        this.hitBox.height + this.hitBox.y > this.game.player.hitBox.y){
+    this.game.ctx.fillText("Press E to advance", this.x - 100, this.y+300);}
     this.PowerUpAnimation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
 
 }
@@ -2394,7 +2441,73 @@ scoreText.prototype.draw = function() {
         this.game.ctx.fillText("SCORE:  " + this.game.score, this.x, this.y);
 }
 
+function FourTurret(game, sprite, xLoc, yLoc) {
+    this.sprite = new Animation(sprite, 64, 64, 192, .15, 3, true, 1.5);
 
+
+    this.x = xLoc;
+    this.y = yLoc;
+    this.game = game;
+    this.hp = 4;
+    this.lastShot = 0;
+    this.ctx = game.ctx;
+    this.type = "4turret";
+    this.removeFromWorld = false;
+    this.hitBox = {x: this.x+5, y: this.y+10, width: 80, height: 75};
+
+    
+}
+
+FourTurret.prototype.update = function() {
+    if(this.game.started == false){
+        return;
+    }
+    currentTime = Date.now() / 1000;
+    if(currentTime - this.lastShot >=5) {
+        this.lastShot = currentTime;
+     
+        this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+28, this.y, "up", .65));
+ 
+        this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserUpDown.png"), this.x+28, this.y+72, "down", .65));
+     
+        this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+15, this.y+5, "left", .65));
+    
+        this.game.addEnemyProj(new Laser(this.game, AM.getAsset("./img/LaserLeftRight.png"), this.x+45, this.y+5, "right", .65));
+        
+    }
+
+    for(i = 0; i < this.game.playerBullet.length; i++) {
+        bullet = this.game.playerBullet[i];
+        if(this.hitBox.x < bullet.hitBox.x + bullet.hitBox.width &&
+            this.hitBox.x + this.hitBox.width > bullet.hitBox.x && 
+            this.hitBox.y < bullet.y + bullet.hitBox.height &&
+            this.hitBox.height + this.hitBox.y > bullet.hitBox.y) {
+                if(this.game.player.AmmoType != "BIG") {
+                    bullet.removeFromWorld = true;
+                    this.hp -= 1;
+                }else{
+                    bullet.removeFromWorld = true;
+                    this.hp -= 2;
+                }
+        }
+    }
+
+    if(this.hp <= 0) {
+        this.removeFromWorld = true;
+        this.game.score += 10;
+    }
+}
+//this.gameEngine.addEnemy(new FourTurret(gameEngine, AM.getAsset("./img/Turret4Way.png"), 400, 400));
+FourTurret.prototype.draw = function() {
+  
+        this.sprite.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
+
+
+    //  this.ctx.beginPath();
+    //  this.ctx.rect(this.hitBox.x, this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    //  this.ctx.stroke();
+    
+}
 
 
 

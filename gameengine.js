@@ -39,7 +39,7 @@ GameEngine.prototype.init = function (ctx) {
     this.timer = new Timer();
     this.startInput();
     this.keyPress = new Array(8);
-
+    this.pressedE = 0;
     this.clickedTest = true;
     this.started = false;
     this.ctx.font = "30px Comic Sans MS";
@@ -75,17 +75,6 @@ GameEngine.prototype.removeAll = function(){
     for(var i = 0; i < this.enemies.length; i++){
         this.enemies[i].removeFromWorld = true;
     }
-    
-    for(var i = 0; i < this.environment.length; i++){
-        this.environment[i].removeFromWorld = true;
-    }
-    for(var i = 0; i < this.enemyProjectiles.length; i++){
-        this.enemyProjectiles[i].removeFromWorld = true;
-    }
-    for(var i = 0; i < this.playerBullet.length; i++){
-        this.playerBullet[i].removeFromWorld = true;
-    }
-
 }
 
 GameEngine.prototype.removeEnemies = function(){
@@ -142,6 +131,10 @@ GameEngine.prototype.startInput = function () {
             that.keyPress["shootRight"] = true;
             e.preventDefault();
         }
+        if(e.code == "KeyE"){
+            that.pressedE = 0;
+            e.preventDefault();
+        }
     });
 
     this.ctx.canvas.addEventListener("keyup" , function(e) {
@@ -175,6 +168,10 @@ GameEngine.prototype.startInput = function () {
         }
         if(e.code === "ArrowRight") {
             that.keyPress["shootRight"] = false;
+            e.preventDefault();
+        }
+        if(e.code == "KeyE"){
+            that.pressedE = 1;
             e.preventDefault();
         }
     });
